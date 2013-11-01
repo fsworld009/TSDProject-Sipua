@@ -1,3 +1,6 @@
+
+import sipua.SipUA;
+
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -14,5 +17,7 @@ public class main {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        SipUA sipUA = new SipUA(10000);
+        sipUA.run();
     }
 }
