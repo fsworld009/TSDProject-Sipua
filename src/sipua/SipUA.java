@@ -29,6 +29,7 @@ public class SipUA extends CallListenerAdapter{
     SipURL mySipURL;
     NameAddress myNameAddress;
     Call myCall;
+    int myPort;
     
     /*
      *         SipURL mySipURL = new SipURL("localhost",myPort);
@@ -111,10 +112,10 @@ public class SipUA extends CallListenerAdapter{
         
         
         Scanner sc = new Scanner(System.in);
-        System.out.printf("Node number:");
-        int node = sc.nextInt();
+        System.out.printf("Enter port number:");
+        myPort = sc.nextInt();
         
-        int myPort;
+        /*int myPort;
         int recvPort;
         
         if(node==1){
@@ -126,7 +127,7 @@ public class SipUA extends CallListenerAdapter{
             recvPort = 10000;
             
             
-        }
+        }*/
         
         
         try {
@@ -135,6 +136,8 @@ public class SipUA extends CallListenerAdapter{
         } catch (UnknownHostException ex) {
             Logger.getLogger(SipUA.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        
         sipProvider = new SipProvider(myIpAddress,myPort){
             @Override
             public synchronized void onReceivedMessage(Transport transport,Message msg){
@@ -148,14 +151,22 @@ public class SipUA extends CallListenerAdapter{
         mySipURL = new SipURL(myIpAddress,myPort);
         myNameAddress = new NameAddress(mySipURL);
         
-        SipURL recvSipURL = new SipURL(myIpAddress,recvPort);
+        System.out.printf("my sip address: %s:%d\n", sipProvider.getViaAddress(), sipProvider.getPort());
+        
+        
+        
+        System.out.println("Enter callee's ip address and port number:");
+        String recvAddress = sc.next();
+        int recvPort = sc.nextInt();
+        SipURL recvSipURL = new SipURL(recvAddress,recvPort);
         NameAddress recvNameAddress = new NameAddress(recvSipURL);
         
         
+        System.out.printf("Call %s:%d\n",recvAddress,recvPort);
         //sipProvider.setOutboundProxy(mySipURL);
         //sipProvider.
        
-        System.out.printf("my sip address: %s:%d\n", sipProvider.getViaAddress(), sipProvider.getPort());
+        
         //System.out.printf("bound to: %s\n", sipProvider.getOutboundProxy().toString());
         /*String msg;
         while(true){
