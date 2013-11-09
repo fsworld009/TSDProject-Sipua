@@ -62,8 +62,16 @@ public class SipUA extends CallListenerAdapter{
 
     }
     
+    @Override
+    public void onCallAccepted(Call call, java.lang.String sdp, Message resp){
+        super.onCallAccepted(call, sdp, resp);
+        System.err.println("Accepted: "+resp.getBody());
+    }
+    
+    @Override
     public void onCallInvite(Call call,NameAddress callee, NameAddress caller, java.lang.String sdp, Message invite){
-        System.err.println(invite);
+        super.onCallInvite(call, callee, caller, sdp, invite);
+        System.err.println("Invite: "+invite.getBody());
         
     }
     
@@ -139,11 +147,11 @@ public class SipUA extends CallListenerAdapter{
         
         
         sipProvider = new SipProvider(myIpAddress,myPort){
-            @Override
+            /*@Override
             public synchronized void onReceivedMessage(Transport transport,Message msg){
                 super.onReceivedMessage(transport,msg);
-                System.err.printf("Receive: %s\n",msg);
-            }
+                System.err.printf("Receive: %s\n",msg.getBody());
+            }*/
             
             
         };
