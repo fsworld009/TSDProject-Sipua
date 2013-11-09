@@ -166,6 +166,11 @@ public class SipUA extends CallListenerAdapter{
             public synchronized void onReceivedMessage(Transport transport,Message msg){
                 super.onReceivedMessage(transport,msg);
                 System.err.printf("Receive: %s\n",msg);
+                if(msg.isInvite()){
+                     myCall = new Call(sipProvider,msg,SipUA.this);
+                     myCall.ring();
+                     myCall.accept("OK");
+                }
             }
             
             
