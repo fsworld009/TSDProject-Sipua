@@ -68,99 +68,49 @@ public class SipUA extends CallListenerAdapter{
     public void onCallAccepted(Call call, java.lang.String sdp, Message resp){
         super.onCallAccepted(call, sdp, resp);
         System.err.println("Accepted: "+resp);
+        call.ackWithAnswer("I GOT IT");
+        //Caller starts its thread here
     }
     
     @Override
     public void onCallInvite(Call call,NameAddress callee, NameAddress caller, java.lang.String sdp, Message invite){
-        System.err.println("Invite: "+invite);
         super.onCallInvite(call, callee, caller, sdp, invite);
+        System.err.println("Invite: "+invite);
+        
         
         
     }
     
     @Override
     public void onCallRinging(Call call,Message resp){
-        
-        System.err.println("onCallRinging: "+resp);
         super.onCallRinging(call, resp);
+        System.err.println("onCallRinging: "+resp);
+        
     }
     
-    public void run(){
-        /*
-        Scanner sc = new Scanner(System.in);
+    @Override
+    public void onCallConfirmed(Call call, java.lang.String sdp, Message ack){
+        super.onCallConfirmed(call, sdp, ack);
+        System.err.println("onCallConfirmed: "+ack);
+        //Callee starts its thread here
         
-        System.out.println("Enter caller's port \n");
-        int port = sc.nextInt();
-        
-        
-        //try {
-            //InetAddress.getLocalHost().getHostAddress()
-            sipProvider = new SipProvider("localhost",port){
-                
-                public void onReceivedMessage(SipProvider sip_provider, Message message) {
-                //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-                        System.err.println(message.getBody());
-                }
-                
-            };
-            //sipProvider.
-        //} catch (UnknownHostException ex) {
-            //Logger.getLogger(SipUA.class.getName()).log(Level.SEVERE, null, ex);
-            //System.out.println("no such host");
-        //}
-        
-        
-        
-        System.out.println("Enter callee's ip address and port\n");
-        String calleeIp = sc.next();
-        int calleePort = sc.nextInt();
-        
-        System.out.printf("%d %s %d\n",port,calleeIp,calleePort);
-        
-        NameAddress myAddr = new NameAddress("localhost");
-        call = new Call(sipProvider, myAddr,this);
-        
-        SipURL calleeSipURL = new SipURL(calleeIp,calleePort);
-        NameAddress calleeNameAddress = new NameAddress(calleeSipURL);
-        call.call(calleeNameAddress);
-        
-        
-        //sipProvider.sendMessage(MessageFactory.createMessageRequest(sipProvider, calleeNameAddress, myAddr, "subject", "type", "AAAAAAA"));
-        */
-        
-        
-        Scanner sc=null;
-        try {
-            sc = new Scanner(new File("input.txt"));
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(SipUA.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        System.out.printf("Enter port number:");
+    }
+    
+    private void initNetVariables(Scanner sc){
+ 
         myPort = sc.nextInt();
         
-        /*int myPort;
-        int recvPort;
-        
-        if(node==1){
-            myPort = 10000;
-            recvPort = 10001;
-            
-        }else{
-            myPort = 10001;
-            recvPort = 10000;
-            
-            
-        }*/
-        
-        
         try {
-            //TcpServer tcpServer = new TcpServer(10000,null);
             myIpAddress = InetAddress.getLocalHost().getHostAddress();
         } catch (UnknownHostException ex) {
-            Logger.getLogger(SipUA.class.getName()).log(Level.SEVERE, null, ex);
+            //Logger.getLogger(SipUA.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        
+        mySipURL = new SipURL(myIpAddress,myPort);
+        myNameAddress = new NameAddress(mySipURL);
+    }
+    
+    private void initSipProvider(){
         sipProvider = new SipProvider(myIpAddress,myPort){
             @Override
             public synchronized void onReceivedMessage(Transport transport,Message msg){
@@ -169,21 +119,27 @@ public class SipUA extends CallListenerAdapter{
                 if(msg.isInvite()){
                      myCall = new Call(sipProvider,msg,SipUA.this);
                      myCall.ring();
-                     myCall.accept("OK");
+                     myCall.accept("LET'S TALK");
                 }
             }
             
             
         };
         
-        mySipURL = new SipURL(myIpAddress,myPort);
-        myNameAddress = new NameAddress(mySipURL);
-        
         System.out.printf("my sip address: %s:%d\n", sipProvider.getViaAddress(), sipProvider.getPort());
+    }
+    
+    public void run(){       
+        Scanner sc=null;
+        try {
+            sc = new Scanner(new File("input.txt"));
+        } catch (FileNotFoundException ex) {
+            //Logger.getLogger(SipUA.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        initNetVariables(sc);
+        initSipProvider();
         
         
-        
-        System.out.println("Enter callee's ip address and port number:");
         String recvAddress = sc.next();
         if(recvAddress.equals("server")){
             System.out.println("I'm a server");
@@ -194,22 +150,6 @@ public class SipUA extends CallListenerAdapter{
 
 
             System.out.printf("Call %s:%d\n",recvAddress,recvPort);
-            //sipProvider.setOutboundProxy(mySipURL);
-            //sipProvider.
-
-
-            //System.out.printf("bound to: %s\n", sipProvider.getOutboundProxy().toString());
-            /*String msg;
-            while(true){
-                System.out.println("Enter Message: ");
-                msg = sc.next();
-                if(msg.equals("quit")){
-                    sipProvider.halt();
-                    break;
-
-                }
-                sipProvider.sendMessage(MessageFactory.createMessageRequest(sipProvider, recvNameAddress, myNameAddress, "subject", "type", msg));
-            }*/
 
             myCall = new Call(sipProvider,myNameAddress,this);
             myCall.call(recvNameAddress);
