@@ -6,12 +6,16 @@ package sipua;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import local.net.RtpPacket;
+import local.net.RtpSocket;
+import org.zoolu.net.IpAddress;
 import org.zoolu.net.UdpSocket;
 import org.zoolu.sip.address.NameAddress;
 import org.zoolu.sip.address.SipURL;
@@ -40,6 +44,12 @@ public class SipUA extends CallListenerAdapter{
     boolean threadRunning = false;
     
     UdpSocket udpSocket;
+    RtpSocket rtpSocket;
+    
+    String recvAddress;
+    int recvPort;
+    SipURL recvSipURL;
+    NameAddress recvNameAddress;
  
     
     public SipUA(){
@@ -80,11 +90,19 @@ public class SipUA extends CallListenerAdapter{
     }
     
     private void initCallThread(){
+        System.out.println("adasdas");
         try {
-            udpSocket = new UdpSocket(myPort);
+            System.out.println("adasdas");
+            udpSocket = new UdpSocket(myPort+1);
+            System.out.println("adasdas");
+            rtpSocket = new RtpSocket(udpSocket,IpAddress.getByName(recvAddress),recvPort+1);
+            System.out.println("adasdas");
         } catch (SocketException ex) {
-            //Logger.getLogger(SipUA.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SipUA.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(SipUA.class.getName()).log(Level.SEVERE, null, ex);
         }
+        System.out.println("ABC"+rtpSocket.toString());
         threadRunning = true;
         micThread = new MicThread();
         micThread.start();
@@ -92,8 +110,13 @@ public class SipUA extends CallListenerAdapter{
         speakerThread.start();
     }
     
-    private void initNetVariables(Scanner sc){
- 
+    private void readConfig(){
+         Scanner sc=null;
+        try {
+            sc = new Scanner(new File("input.txt"));
+        } catch (FileNotFoundException ex) {
+            //Logger.getLogger(SipUA.class.getName()).log(Level.SEVERE, null, ex);
+        }
         myPort = sc.nextInt();
         
         try {
@@ -104,6 +127,9 @@ public class SipUA extends CallListenerAdapter{
         
         mySipURL = new SipURL(myIpAddress,myPort);
         myNameAddress = new NameAddress(mySipURL);
+        
+        recvAddress = sc.next();
+        recvPort = sc.nextInt();
     }
     
     private void initSipProvider(){
@@ -113,9 +139,20 @@ public class SipUA extends CallListenerAdapter{
                 super.onReceivedMessage(transport,msg);
                 System.err.printf("Receive: %s\n",msg);
                 if(msg.isInvite()){
-                     myCall = new Call(sipProvider,msg,SipUA.this);
-                     myCall.ring();
-                     myCall.accept("LET'S TALK");
+                    myCall = new Call(sipProvider,msg,SipUA.this);
+
+
+                    //init recv variables
+                    recvAddress = msg.getRemoteAddress();
+                    recvPort = msg.getRemotePort();
+                    recvSipURL = new SipURL(recvAddress,recvPort);
+                    recvNameAddress = new NameAddress(recvSipURL);
+                     
+
+
+                    System.out.printf("Receive invite from %s:%d\n",recvAddress,recvPort);
+                    myCall.ring();
+                    myCall.accept("LET'S TALK");
                 }
             }
             
@@ -126,24 +163,15 @@ public class SipUA extends CallListenerAdapter{
     }
     
     public void run(){       
-        Scanner sc=null;
-        try {
-            sc = new Scanner(new File("input.txt"));
-        } catch (FileNotFoundException ex) {
-            //Logger.getLogger(SipUA.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        initNetVariables(sc);
+
+        readConfig();
         initSipProvider();
         
-        
-        String recvAddress = sc.next();
         if(recvAddress.equals("server")){
             System.out.println("I'm a server");
         }else{
-            int recvPort = sc.nextInt();
-            SipURL recvSipURL = new SipURL(recvAddress,recvPort);
-            NameAddress recvNameAddress = new NameAddress(recvSipURL);
-
+            recvSipURL = new SipURL(recvAddress,recvPort);
+            recvNameAddress = new NameAddress(recvSipURL);
 
             System.out.printf("Call %s:%d\n",recvAddress,recvPort);
 
@@ -157,8 +185,18 @@ public class SipUA extends CallListenerAdapter{
         @Override
         public void run(){
             while(threadRunning){
-                System.out.println("Mic");
+                //System.out.println("Mic");
                 try {
+                    String data = "12345678";
+                    byte[] byteData = data.getBytes();
+                    System.out.printf("%s", byteData);
+                    try {
+                        RtpPacket rtpPacket= new RtpPacket(data.getBytes(),data.getBytes().length);
+                        rtpSocket.send(rtpPacket);
+                    } catch (IOException ex) {
+                        Logger.getLogger(SipUA.class.getName()).log(Level.SEVERE, null, ex);
+                        System.err.println("rtpSocket.send(new RtpPacket(data,4)) failed");
+                    }
                     Thread.sleep(100);
                 } catch (InterruptedException ex) {
                     //Logger.getLogger(IRCBot.class.getName()).log(Level.SEVERE, null, ex);
@@ -173,9 +211,15 @@ public class SipUA extends CallListenerAdapter{
             while(threadRunning){
                 System.out.println("Speaker");
                 try {
+                    //RtpPacket rtpPacket=null;
+                    //rtpSocket.receive(rtpPacket);
+                    //System.out.printf("RECV: %s\n",rtpPacket.getPacket());
                     Thread.sleep(100);
                 } catch (InterruptedException ex) {
                     //Logger.getLogger(IRCBot.class.getName()).log(Level.SEVERE, null, ex);
+                /*} catch (IOException ex) {
+                    //Logger.getLogger(SipUA.class.getName()).log(Level.SEVERE, null, ex);
+                    System.err.println("rtpSocket.receive(rtpPacket) failed");*/
                 }
             }
         }
