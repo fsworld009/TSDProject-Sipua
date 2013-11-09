@@ -90,19 +90,14 @@ public class SipUA extends CallListenerAdapter{
     }
     
     private void initCallThread(){
-        System.out.println("adasdas");
         try {
-            System.out.println("adasdas");
             udpSocket = new UdpSocket(myPort+1);
-            System.out.println("adasdas");
             rtpSocket = new RtpSocket(udpSocket,IpAddress.getByName(recvAddress),recvPort+1);
-            System.out.println("adasdas");
         } catch (SocketException ex) {
             Logger.getLogger(SipUA.class.getName()).log(Level.SEVERE, null, ex);
         } catch (UnknownHostException ex) {
             Logger.getLogger(SipUA.class.getName()).log(Level.SEVERE, null, ex);
         }
-        System.out.println("ABC"+rtpSocket.toString());
         threadRunning = true;
         micThread = new MicThread();
         micThread.start();
@@ -187,11 +182,11 @@ public class SipUA extends CallListenerAdapter{
             while(threadRunning){
                 //System.out.println("Mic");
                 try {
-                    String data = "12345678";
+                    String data = "123456789ABC";
                     byte[] byteData = data.getBytes();
-                    System.out.printf("%s", byteData);
+                    //System.out.printf("%s", byteData);
                     try {
-                        RtpPacket rtpPacket= new RtpPacket(data.getBytes(),data.getBytes().length);
+                        RtpPacket rtpPacket= new RtpPacket(byteData,byteData.length);
                         rtpSocket.send(rtpPacket);
                     } catch (IOException ex) {
                         Logger.getLogger(SipUA.class.getName()).log(Level.SEVERE, null, ex);
@@ -209,17 +204,18 @@ public class SipUA extends CallListenerAdapter{
         @Override
         public void run(){
             while(threadRunning){
-                System.out.println("Speaker");
+                //System.out.println("Speaker");
                 try {
-                    //RtpPacket rtpPacket=null;
-                    //rtpSocket.receive(rtpPacket);
-                    //System.out.printf("RECV: %s\n",rtpPacket.getPacket());
+                    byte[] byteData = new byte[12];
+                    RtpPacket rtpPacket=new RtpPacket(byteData,12);
+                    rtpSocket.receive(rtpPacket);
+                    System.out.printf("RECV: %s\n",rtpPacket.getPacket());
                     Thread.sleep(100);
                 } catch (InterruptedException ex) {
                     //Logger.getLogger(IRCBot.class.getName()).log(Level.SEVERE, null, ex);
-                /*} catch (IOException ex) {
+                } catch (IOException ex) {
                     //Logger.getLogger(SipUA.class.getName()).log(Level.SEVERE, null, ex);
-                    System.err.println("rtpSocket.receive(rtpPacket) failed");*/
+                    System.err.println("rtpSocket.receive(rtpPacket) failed");
                 }
             }
         }
