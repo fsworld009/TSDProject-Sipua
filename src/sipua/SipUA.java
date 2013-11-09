@@ -7,10 +7,12 @@ package sipua;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.InetAddress;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.zoolu.net.UdpSocket;
 import org.zoolu.sip.address.NameAddress;
 import org.zoolu.sip.address.SipURL;
 import org.zoolu.sip.call.Call;
@@ -33,32 +35,12 @@ public class SipUA extends CallListenerAdapter{
     Call myCall;
     int myPort;
     
-    /*
-     *         SipURL mySipURL = new SipURL("localhost",myPort);
-        NameAddress myNameAddress = new NameAddress(mySipURL);
-        
-        SipURL recvSipURL = new SipURL("localhost",recvPort);
-        NameAddress recvNameAddress = new NameAddress(recvSipURL);
-        
-        
-        //sipProvider.setOutboundProxy(mySipURL);
-        //sipProvider.
-       
-        System.out.printf("my sip address: %s:%d\n", sipProvider.getViaAddress(), sipProvider.getPort());
-        //System.out.printf("bound to: %s\n", sipProvider.getOutboundProxy().toString());
-        String msg;
-        while(true){
-            System.out.println("Enter Message: ");
-            msg = sc.next();
-            if(msg.equals("quit")){
-                sipProvider.halt();
-                break;
-                
-            }
-            sipProvider.sendMessage(MessageFactory.createMessageRequest(sipProvider, recvNameAddress, myNameAddress, "subject", "type", msg));
-        }
-     * 
-     */
+    MicThread micThread;
+    SpeakerThread speakerThread;
+    boolean threadRunning = false;
+    
+    UdpSocket udpSocket;
+ 
     
     public SipUA(){
 
@@ -70,6 +52,7 @@ public class SipUA extends CallListenerAdapter{
         System.err.println("Accepted: "+resp);
         call.ackWithAnswer("I GOT IT");
         //Caller starts its thread here
+        initCallThread();
     }
     
     @Override
@@ -93,7 +76,20 @@ public class SipUA extends CallListenerAdapter{
         super.onCallConfirmed(call, sdp, ack);
         System.err.println("onCallConfirmed: "+ack);
         //Callee starts its thread here
-        
+        initCallThread();
+    }
+    
+    private void initCallThread(){
+        try {
+            udpSocket = new UdpSocket(myPort);
+        } catch (SocketException ex) {
+            //Logger.getLogger(SipUA.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        threadRunning = true;
+        micThread = new MicThread();
+        micThread.start();
+        speakerThread = new SpeakerThread();
+        speakerThread.start();
     }
     
     private void initNetVariables(Scanner sc){
@@ -155,6 +151,34 @@ public class SipUA extends CallListenerAdapter{
             myCall.call(recvNameAddress);
         }
         
+    }
+    
+    private class MicThread extends Thread{
+        @Override
+        public void run(){
+            while(threadRunning){
+                System.out.println("Mic");
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException ex) {
+                    //Logger.getLogger(IRCBot.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+    }
+    
+    private class SpeakerThread extends Thread{
+        @Override
+        public void run(){
+            while(threadRunning){
+                System.out.println("Speaker");
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException ex) {
+                    //Logger.getLogger(IRCBot.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
     }
 
 
