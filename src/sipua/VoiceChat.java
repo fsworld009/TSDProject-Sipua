@@ -5,6 +5,13 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.DataLine;
+import javax.sound.sampled.Line;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.Port;
+import javax.sound.sampled.TargetDataLine;
 import local.net.RtpPacket;
 import local.net.RtpSocket;
 import org.zoolu.net.IpAddress;
@@ -14,8 +21,9 @@ import org.zoolu.net.UdpSocket;
 
 
 public class VoiceChat {
-    byte[] sendBuffer = new byte[1024];
-    byte[] receiveBuffer = new byte[1024];
+    byte[] sendBuffer;
+    boolean mic;
+    byte[] receiveBuffer;
     String connectAddress;
     int connectPort;
     //SipURL recvSipURL;
@@ -31,42 +39,91 @@ public class VoiceChat {
     SendThread sendThread;
     ReceiveThread receiveThread;
     
+    AudioFormat audioFormat;
+    DataLine.Info lineInfo;
+    TargetDataLine recordLine;
+    
     public void init(String address, int port){
         connectAddress = address;
         connectPort = port;
         try {        
             udpSocket = new UdpSocket(connectPort);
             rtpSocket = new RtpSocket(udpSocket,IpAddress.getByName(connectAddress),connectPort);
+            
+            
+            audioFormat = new AudioFormat(8000,8,2,true,true);
+            lineInfo = new DataLine.Info(TargetDataLine.class, audioFormat);
+            recordLine = (TargetDataLine)AudioSystem.getLine(lineInfo);
+            //System.out.printf("%b",AudioSystem.isLineSupported(Port.Info.MICROPHONE));
+            //recordLine =  AudioSystem.getLine(Port.Info.MICROPHONE).;
+            
+            
+            //Line line;
+            //line = AudioSystem.getLine(Port.Info.MICROPHONE);
+            //recordLine = (TargetDataLine) AudioSystem.getLine(line.getLineInfo());
+            /*if(recordLine == null){
+                    System.out.println("Did not worked");
+                }else{
+                    System.out.println("It worked");
+                }*/
+            
+            int bufferSize = (int)audioFormat.getSampleRate() * audioFormat.getFrameSize();
+            sendBuffer = new byte[bufferSize];
+            receiveBuffer = new byte[bufferSize];
         } catch (SocketException ex) {
             Logger.getLogger(VoiceChat.class.getName()).log(Level.SEVERE, null, ex);
         } catch (UnknownHostException ex) {
             Logger.getLogger(VoiceChat.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (LineUnavailableException ex) {
+            Logger.getLogger(VoiceChat.class.getName()).log(Level.SEVERE, null, ex);
         }
-            
+
+        
     }
     
     public void start(){
         threadRunning = true;
         micThread = new MicThread();
         speakerThread = new SpeakerThread();
-        sendThread = new SendThread();
-        receiveThread = new ReceiveThread();
+        //sendThread = new SendThread();
+        //receiveThread = new ReceiveThread();
+        
+        
+        
+        
         micThread.start();
         speakerThread.start();
-        sendThread.start();
-        receiveThread.start();
+        //sendThread.start();
+        //receiveThread.start();
     }
     
     private class MicThread extends Thread{
         @Override
         public void run(){
+            try {
+                recordLine.open(audioFormat);
+            } catch (LineUnavailableException ex) {
+                Logger.getLogger(VoiceChat.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            recordLine.start();
+            int count;
             while(threadRunning){
                 try {
+                    count = recordLine.read(sendBuffer, 0, sendBuffer.length);
+                    if (count > 0) {
+                      System.out.printf("RECORDED: %s\n", sendBuffer);
+                      RtpPacket rtpPacket= new RtpPacket(sendBuffer,sendBuffer.length);
+                      rtpSocket.send(rtpPacket);
+                    }
                     Thread.sleep(100);
                 } catch (InterruptedException ex) {
                     Logger.getLogger(VoiceChat.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(VoiceChat.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
+            recordLine.drain();
+            recordLine.close();
         }
         
     }
@@ -117,7 +174,7 @@ public class VoiceChat {
                     byte[] byteData = new byte[12];
                     RtpPacket rtpPacket=new RtpPacket(byteData,12);
                     rtpSocket.receive(rtpPacket);
-                    System.out.printf("RECV: %s\n",rtpPacket.getPacket());
+                    //System.out.printf("RECV: %s\n",rtpPacket.getPacket());
                     Thread.sleep(100);
                 } catch (InterruptedException ex) {
                     Logger.getLogger(VoiceChat.class.getName()).log(Level.SEVERE, null, ex);
