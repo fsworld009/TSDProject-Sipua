@@ -18,6 +18,6 @@ public class main {
     public static void main(String[] args) {
         // TODO code application logic here
         SipUA sipUA = new SipUA();
-        sipUA.run();
+        sipUA.start();
     }
 }
