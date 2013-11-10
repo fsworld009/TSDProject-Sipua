@@ -41,8 +41,8 @@ public class VoiceChat {
     
     MicThread micThread;
     SpeakerThread speakerThread;
-    SendThread sendThread;
-    ReceiveThread receiveThread;
+    //SendThread sendThread;
+    //ReceiveThread receiveThread;
     
     AudioFormat audioFormat;
     DataLine.Info recordLineInfo;
@@ -77,6 +77,8 @@ public class VoiceChat {
                 }*/
             
             bufferSize = (int)audioFormat.getSampleRate() * audioFormat.getFrameSize();
+            System.out.printf("fsdfs %d %f %d", bufferSize,audioFormat.getSampleRate(),audioFormat.getFrameSize());
+            //bufferSize = 4000;
             sendBuffer = new byte[bufferSize];
             receiveBuffer = new byte[bufferSize];
             
@@ -132,7 +134,7 @@ public class VoiceChat {
                       rtpSocket.send(rtpPacket);
                       recordLine.drain();
                     }
-                    Thread.sleep(100);
+                    Thread.sleep(5);
                 } catch (InterruptedException ex) {
                     Logger.getLogger(VoiceChat.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (IOException ex) {
@@ -164,7 +166,7 @@ public class VoiceChat {
                     playLine.write(receiveBuffer, 0, bufferSize);
                     playLine.drain();
 
-                    Thread.sleep(100);
+                    Thread.sleep(5);
                 } catch (InterruptedException ex) {
                     Logger.getLogger(VoiceChat.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (IOException ex) {
@@ -175,7 +177,7 @@ public class VoiceChat {
         }
         
     }
-    
+    /*
     private class SendThread extends Thread{
         @Override
         public void run(){
@@ -218,6 +220,6 @@ public class VoiceChat {
             }
         }
         
-    }
+    }*/
     
 }
