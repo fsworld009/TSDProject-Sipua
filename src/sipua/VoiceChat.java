@@ -132,7 +132,7 @@ public class VoiceChat {
                       System.out.printf("RECORDED: %s\n", sendBuffer);
                       RtpPacket rtpPacket= new RtpPacket(sendBuffer,sendBuffer.length);
                       rtpSocket.send(rtpPacket);
-                      recordLine.drain();
+                      //recordLine.drain();
                     }
                     Thread.sleep(5);
                 } catch (InterruptedException ex) {
@@ -141,7 +141,7 @@ public class VoiceChat {
                     Logger.getLogger(VoiceChat.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            
+            recordLine.drain();
             recordLine.close();
         }
         
@@ -164,7 +164,7 @@ public class VoiceChat {
                     rtpSocket.receive(rtpPacket);
                     System.out.printf("RECV: %s\n",rtpPacket.getPacket());
                     playLine.write(receiveBuffer, 0, bufferSize);
-                    playLine.drain();
+                    //
 
                     Thread.sleep(5);
                 } catch (InterruptedException ex) {
@@ -173,6 +173,7 @@ public class VoiceChat {
                     Logger.getLogger(VoiceChat.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
+            playLine.drain();
             playLine.close();
         }
         
