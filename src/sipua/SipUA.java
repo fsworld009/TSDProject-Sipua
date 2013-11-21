@@ -36,7 +36,7 @@ public class SipUA extends CallListenerAdapter{
     String myIpAddress="";
     SipURL mySipURL;
     NameAddress myNameAddress;
-    Call myCall;
+    Call callHandler;
     int myPort;
     
 
@@ -52,10 +52,13 @@ public class SipUA extends CallListenerAdapter{
     VoiceChat voiceChat;
     
     int rtpPort;
+    
+    //SipUI sipUIRef;
+    //CallListenerAdapter eventListener;
  
     
-    public SipUA(){
-
+    public SipUA(/*CallListenerAdapter eventListener*/){
+        //this.eventListener = eventListener;
     }
     
     @Override
@@ -69,7 +72,7 @@ public class SipUA extends CallListenerAdapter{
     
     @Override
     public void onCallInvite(Call call,NameAddress callee, NameAddress caller, java.lang.String sdp, Message invite){
-        super.onCallInvite(call, callee, caller, sdp, invite);
+        //super.onCallInvite(call, callee, caller, sdp, invite);
         System.err.println("Invite: "+invite);
         
         
@@ -101,7 +104,8 @@ public class SipUA extends CallListenerAdapter{
     private void readConfig(){
          Scanner sc=null;
         try {
-            sc = new Scanner(new File("input.txt"));
+            //sc = new Scanner(new File("input.txt"));
+            sc = new Scanner(new File("config.txt"));
         } catch (FileNotFoundException ex) {
             //Logger.getLogger(SipUA.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -116,13 +120,13 @@ public class SipUA extends CallListenerAdapter{
         mySipURL = new SipURL(myIpAddress,myPort);
         myNameAddress = new NameAddress(mySipURL);
         
-        recvAddress = sc.next();
-        recvPort = sc.nextInt();
+        //recvAddress = sc.next();
+        //recvPort = sc.nextInt();
         rtpPort = sc.nextInt();
     }
     
     private void initSipProvider(){
-        sipProvider = new SipProvider(myIpAddress,myPort){
+        sipProvider = new SipProvider(myIpAddress,myPort)/*{
             @Override
             public synchronized void onReceivedMessage(Transport transport,Message msg){
                 super.onReceivedMessage(transport,msg);
@@ -146,17 +150,23 @@ public class SipUA extends CallListenerAdapter{
             }
             
             
-        };
+        }*/;
         
-        System.out.printf("my sip address: %s:%d\n", sipProvider.getViaAddress(), sipProvider.getPort());
+        System.out.printf("My sip address: %s:%d\n", sipProvider.getViaAddress(), sipProvider.getPort());
+    }
+    
+    public void initCall(){
+        callHandler = new Call(sipProvider,myNameAddress,this);
+        callHandler.listen();
     }
     
     public void start(){       
 
         readConfig();
         initSipProvider();
+        initCall();
         
-        if(recvAddress.equals("server")){
+        /*if(recvAddress.equals("server")){
             System.out.println("I'm a server");
         }else{
             recvSipURL = new SipURL(recvAddress,recvPort);
@@ -166,8 +176,21 @@ public class SipUA extends CallListenerAdapter{
 
             myCall = new Call(sipProvider,myNameAddress,this);
             myCall.call(recvNameAddress);
-        }
+        }*/
         
+    }
+    
+    public void call(String sipAddress, int port){
+        recvAddress = sipAddress;
+        recvPort = port;
+        recvSipURL = new SipURL(recvAddress,recvPort);
+        recvNameAddress = new NameAddress(recvSipURL);
+        
+        System.out.printf("Call %s:%d\n",recvAddress,recvPort);
+        
+        //myCall = new Call();
+        //myCall.call(recvNameAddress);
+
     }
 
 

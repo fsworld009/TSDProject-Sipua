@@ -4,15 +4,16 @@
  */
 package sipua;
 
-import java.io.IOException;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
-public class SipUI {
+public class SipUI{
     private SipUA sipUA=null;
     private Scanner userInput = new Scanner(System.in);
+    
+    
+
+    
     
     public void start(){
         
@@ -42,7 +43,13 @@ public class SipUI {
     }
     
     public void call(){
-        System.out.println("Call");
+        System.out.println("Enter SIP Address (IP:Port)");
+        String sipAddr;
+        sipAddr = userInput.next();
+        String[] sipAddrs = sipAddr.split(":");
+        System.out.printf("%s %s\n",sipAddrs[0],sipAddrs[1]);
+        
+        
         return;
     }
     
