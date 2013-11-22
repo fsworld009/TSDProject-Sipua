@@ -1,5 +1,5 @@
 
-import sipua.SipUI;
+import sipua.MainUI;
 
 /*
  * To change this template, choose Tools | Templates
@@ -17,7 +17,7 @@ public class main {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        SipUI sipUI = new SipUI();
+        MainUI sipUI = new MainUI();
         sipUI.start();
     }
 }

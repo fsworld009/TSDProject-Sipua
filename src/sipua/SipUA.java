@@ -53,14 +53,14 @@ public class SipUA extends CallListenerAdapter{
     
     int rtpPort;
     
-    SipUI sipUIRef;
+    MainUI uiRef;
     //CallListenerAdapter eventListener;
     
  
     
-    public SipUA(SipUI sipui/*CallListenerAdapter eventListener*/){
+    public SipUA(MainUI sipui/*CallListenerAdapter eventListener*/){
         //this.eventListener = eventListener;
-        sipUIRef = sipui;
+        uiRef = sipui;
     }
     
     @Override
@@ -77,7 +77,7 @@ public class SipUA extends CallListenerAdapter{
         //super.onCallInvite(call, callee, caller, sdp, invite);
         System.err.println("Invite: "+invite);
         System.out.println();
-        if(sipUIRef.called(invite.getRemoteAddress())){
+        if(uiRef.called(invite.getRemoteAddress())){
             System.out.println("ACCEPT");
             
         }else{

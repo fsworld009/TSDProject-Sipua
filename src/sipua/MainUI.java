@@ -7,7 +7,7 @@ package sipua;
 import java.util.Scanner;
 
 
-public class SipUI{
+public class MainUI{
     private SipUA sipUA=null;
     private Scanner userInput = new Scanner(System.in);
     
