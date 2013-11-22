@@ -39,8 +39,26 @@ public class MainUI{
             }
         }
     }
-
     
+    private char fetchChar(){
+        synchronized(inputQueue){
+            if(inputQueue.size()>0){
+                return inputQueue.poll().charAt(0);
+            }else{
+                return '\0';
+            }
+        }
+    }
+
+    private String fetchString(){
+        synchronized(inputQueue){
+            if(inputQueue.size()>0){
+                return inputQueue.poll();
+            }else{
+                return "";
+            }
+        }
+    }
     
     public void start(){
         
@@ -65,14 +83,11 @@ public class MainUI{
         while(true){
             try {
                 
-                //option = userInput.next().charAt(0);
-                //System.err.printf("%c\n",option);
-                /*if(option=='c'){
+                if(fetchChar()=='c'){
                     call();
-                }else if(option=='q'){
+                }else if(fetchChar()=='q'){
                     quit();
-                    
-                }*/
+                }
                 Thread.sleep(100);
             } catch (InterruptedException ex) {
                 Logger.getLogger(MainUI.class.getName()).log(Level.SEVERE, null, ex);
@@ -84,10 +99,10 @@ public class MainUI{
     public void call(){
         System.out.println("Enter SIP Address (IP:Port)");
         String sipAddr;
-        sipAddr = userInput.next();
-        String[] sipAddrs = sipAddr.split(":");
-        System.out.printf("%s %s\n",sipAddrs[0],sipAddrs[1]);
-        sipUA.call(sipAddrs[0],Integer.parseInt(sipAddrs[1]));
+        //sipAddr = userInput.next();
+        //String[] sipAddrs = sipAddr.split(":");
+        //System.out.printf("%s %s\n",sipAddrs[0],sipAddrs[1]);
+        //sipUA.call(sipAddrs[0],Integer.parseInt(sipAddrs[1]));
         
         
         return;
