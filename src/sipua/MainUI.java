@@ -15,13 +15,13 @@ public class MainUI{
     private SipUA sipUA=null;
     private Scanner userInput = new Scanner(System.in);
     
-    LinkedBlockingQueue<String> inputQueue;
+    //LinkedBlockingQueue<String> inputQueue;
     
-    boolean threadRunning = false;
+    //boolean threadRunning = false;
     
-    private InputThread inputThread;
+    //private InputThread inputThread;
     
-    private class InputThread extends Thread{
+    /*private class InputThread extends Thread{
         @Override
         public void run(){
             String buffer;
@@ -38,25 +38,18 @@ public class MainUI{
                 }
             }
         }
-    }
+    }*/
+    
     
     private char fetchChar(){
-        synchronized(inputQueue){
-            if(inputQueue.size()>0){
-                return inputQueue.poll().charAt(0);
-            }else{
-                return '\0';
-            }
+        synchronized(userInput){
+            return userInput.nextLine().charAt(0);
         }
     }
 
     private String fetchString(){
-        synchronized(inputQueue){
-            if(inputQueue.size()>0){
-                return inputQueue.poll();
-            }else{
-                return "";
-            }
+        synchronized(userInput){
+            return userInput.nextLine();
         }
     }
     
@@ -68,41 +61,35 @@ public class MainUI{
         }
         
         //init input thread
-        inputQueue = new LinkedBlockingQueue<String>();
+        /*inputQueue = new LinkedBlockingQueue<String>();
         threadRunning = true;
         inputThread = new InputThread();
-        inputThread.start();
+        inputThread.start();*/
         run();
     }
     
     public void run(){
-        char option;
+        //char option;
         System.out.println("SIPUA");
         System.out.println("c: Call");
         System.out.println("q: Quit");
         while(true){
-            try {
-                
-                if(fetchChar()=='c'){
-                    call();
-                }else if(fetchChar()=='q'){
-                    quit();
-                }
-                Thread.sleep(100);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(MainUI.class.getName()).log(Level.SEVERE, null, ex);
+            if(fetchChar()=='c'){
+                call();
+            }else if(fetchChar()=='q'){
+                quit();
             }
         }
         
     }
     
     public void call(){
-        System.out.println("Enter SIP Address (IP:Port)");
+        System.out.println("Enter SIP Address (IP Port)");
         String sipAddr;
-        //sipAddr = userInput.next();
-        //String[] sipAddrs = sipAddr.split(":");
+        sipAddr = fetchString();
+        String[] sipAddrs = sipAddr.split("\\s+");
         //System.out.printf("%s %s\n",sipAddrs[0],sipAddrs[1]);
-        //sipUA.call(sipAddrs[0],Integer.parseInt(sipAddrs[1]));
+        sipUA.call(sipAddrs[0],Integer.parseInt(sipAddrs[1]));
         
         
         return;
@@ -118,11 +105,6 @@ public class MainUI{
                 return true;
             }else if(option=='n'){
                 return false;
-            }
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(MainUI.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         
