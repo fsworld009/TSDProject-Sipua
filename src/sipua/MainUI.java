@@ -4,14 +4,41 @@
  */
 package sipua;
 
+import java.util.Queue;
 import java.util.Scanner;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 public class MainUI{
     private SipUA sipUA=null;
     private Scanner userInput = new Scanner(System.in);
     
+    LinkedBlockingQueue<String> inputQueue;
     
+    boolean threadRunning = false;
+    
+    private InputThread inputThread;
+    
+    private class InputThread extends Thread{
+        @Override
+        public void run(){
+            String buffer;
+            while(threadRunning){
+                buffer = userInput.next();
+                synchronized(inputQueue){
+                    inputQueue.add(buffer);
+                    //System.out.println(buffer);
+                }
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(MainUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+    }
 
     
     
@@ -21,22 +48,34 @@ public class MainUI{
             sipUA = new SipUA(this);
             sipUA.start();
         }
+        
+        //init input thread
+        inputQueue = new LinkedBlockingQueue<String>();
+        threadRunning = true;
+        inputThread = new InputThread();
+        inputThread.start();
         run();
     }
     
     public void run(){
         char option;
+        System.out.println("SIPUA");
+        System.out.println("c: Call");
+        System.out.println("q: Quit");
         while(true){
-            System.out.println("SIPUA");
-            System.out.println("c: Call");
-            System.out.println("q: Quit");
-            option = userInput.next().charAt(0);
-            System.err.printf("%c\n",option);
-            if(option=='c'){
-                call();
-            }else if(option=='q'){
-                quit();
+            try {
                 
+                //option = userInput.next().charAt(0);
+                //System.err.printf("%c\n",option);
+                /*if(option=='c'){
+                    call();
+                }else if(option=='q'){
+                    quit();
+                    
+                }*/
+                Thread.sleep(100);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(MainUI.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         
