@@ -79,10 +79,10 @@ public class SipUA extends CallListenerAdapter{
         System.out.println();
         if(uiRef.called(invite.getRemoteAddress())){
             System.out.println("ACCEPT");
-            
+            call.accept(sdp);
         }else{
             System.out.println("DENY");
-            
+            call.refuse();
         }
         //sipUIRef.called(, myPort);
         

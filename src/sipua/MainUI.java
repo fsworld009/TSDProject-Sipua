@@ -111,11 +111,19 @@ public class MainUI{
     public boolean called(String addr){
         System.out.printf("A call from %s\n",addr);
         System.out.printf("y=answer n=deny\n");
-        char option = userInput.next().charAt(0);
-        if(option=='y'){
-            return true;
-        }else{
-            return false;
+        char option;
+        while(true){
+            option = fetchChar();
+            if(option=='y'){
+                return true;
+            }else if(option=='n'){
+                return false;
+            }
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(MainUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         
     }
