@@ -138,6 +138,7 @@ public class SipUA extends CallListenerAdapter{
     
     private void closeVoiceChat(){
         voiceChat.close();
+        callHandler.listen();
     }
     
     private void readConfig(){
