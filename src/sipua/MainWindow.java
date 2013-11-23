@@ -31,6 +31,7 @@ public class MainWindow extends JFrame {
     private JButton cancelButton;
     private GUIActionListener listener;
     private SipUA sipUA;
+    private int state;  //0=caller, 1=callee
     
     public MainWindow(){
         super("Simple Sip UA");
@@ -140,7 +141,11 @@ public class MainWindow extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 if(e.getSource() == MainWindow.this.okButton){
                     String[] sipAddrs = inputField.getText().split("\\s+");
-                    sipUA.call(sipAddrs[0],Integer.parseInt(sipAddrs[1]));
+                    if(sipAddrs.length==2){
+                        sipUA.call(sipAddrs[0],Integer.parseInt(sipAddrs[1]));
+                    }else{
+                        appendMsg("Input format error");
+                    }
                 }
             }
     }

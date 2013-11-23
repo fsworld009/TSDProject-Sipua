@@ -79,6 +79,7 @@ public class SipUA extends CallListenerAdapter{
     public void onCallInvite(Call call,NameAddress callee, NameAddress caller, java.lang.String sdp, Message invite){
         //super.onCallInvite(call, callee, caller, sdp, invite);
         System.err.println("Invite: "+invite);
+        //uiRef.appendLog(invite.toString());
         call.ring();
         System.out.println();
         if(uiRef.called(invite.getRemoteAddress())){
@@ -143,31 +144,19 @@ public class SipUA extends CallListenerAdapter{
     }
     
     private void initSipProvider(){
-        sipProvider = new SipProvider(myIpAddress,myPort)/*{
+        sipProvider = new SipProvider(myIpAddress,myPort){
+            @Override
+            public synchronized void onSendMessage(Message msg){
+                uiRef.appendLog(">>> "+msg.toString()+"\n");
+            }
+            
             @Override
             public synchronized void onReceivedMessage(Transport transport,Message msg){
-                super.onReceivedMessage(transport,msg);
-                System.err.printf("Receive: %s\n",msg);
-                if(msg.isInvite()){
-                    myCall = new Call(sipProvider,msg,SipUA.this);
-
-
-                    //init recv variables
-                    recvAddress = msg.getRemoteAddress();
-                    recvPort = msg.getRemotePort();
-                    recvSipURL = new SipURL(recvAddress,recvPort);
-                    recvNameAddress = new NameAddress(recvSipURL);
-                     
-
-
-                    System.out.printf("Receive invite from %s:%d\n",recvAddress,recvPort);
-                    myCall.ring();
-                    myCall.accept("LET'S TALK");
-                }
+                uiRef.appendLog("<<< "+msg.toString()+"\n");
             }
             
             
-        }*/;
+        };
         
         uiRef.appendMsg(String.format("My sip address: %s:%d\n", sipProvider.getViaAddress(), sipProvider.getPort()));
     }
@@ -205,6 +194,9 @@ public class SipUA extends CallListenerAdapter{
         
         uiRef.appendMsg(String.format("Call %s:%d\n",recvAddress,recvPort));
         callHandler.call(recvNameAddress, "rtp=10001");
+        
+        
+        
         
         //myCall = new Call();
         //myCall.call(recvNameAddress);

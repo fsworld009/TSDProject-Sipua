@@ -787,6 +787,11 @@ public class SipProvider implements Configurable, TransportListener
       
       return sendMessage(msg,proto,dest_addr,dest_port,ttl); 
    }
+   
+   //override this
+   public synchronized void onSendMessage(Message msg){
+       
+   }
 
 
    /** Sends a Message, specifing the transport portocol, nexthop address and port.
@@ -804,7 +809,8 @@ public class SipProvider implements Configurable, TransportListener
      * (e.g. TCP) or null in case of connection-less delivery (e.g. UDP)
      */
    public TransportConnId sendMessage(Message msg, String proto, String dest_addr, int dest_port, int ttl)
-   {  if (log_all_packets || msg.getLength()>MIN_MESSAGE_LENGTH) printLog("Resolving host address '"+dest_addr+"'",Log.LEVEL_MEDIUM);
+   {  //System.out.println("1");
+       if (log_all_packets || msg.getLength()>MIN_MESSAGE_LENGTH) printLog("Resolving host address '"+dest_addr+"'",Log.LEVEL_MEDIUM);
       try
       {  IpAddress dest_ipaddr=IpAddress.getByName(dest_addr);  
          return sendMessage(msg,proto,dest_ipaddr,dest_port,ttl); 
@@ -817,7 +823,8 @@ public class SipProvider implements Configurable, TransportListener
 
    /** Sends a Message, specifing the transport portocol, nexthop address and port. */
    private TransportConnId sendMessage(Message msg, String proto, IpAddress dest_ipaddr, int dest_port, int ttl)
-   {  if (log_all_packets || msg.getLength()>MIN_MESSAGE_LENGTH) printLog("Sending message to "+(new TransportConnId(proto,dest_ipaddr,dest_port)).toString(),Log.LEVEL_MEDIUM);
+   {  onSendMessage(msg);
+       if (log_all_packets || msg.getLength()>MIN_MESSAGE_LENGTH) printLog("Sending message to "+(new TransportConnId(proto,dest_ipaddr,dest_port)).toString(),Log.LEVEL_MEDIUM);
 
       TransportConn conn=null;
       try
@@ -845,7 +852,8 @@ public class SipProvider implements Configurable, TransportListener
 
    /** Sends the message <i>msg</i> using the specified transport connection. */
    public TransportConnId sendMessage(Message msg, TransportConnId conn_id)
-   {  if (log_all_packets || msg.getLength()>MIN_MESSAGE_LENGTH) printLog("Sending message through conn "+conn_id,Log.LEVEL_HIGH);
+   {  //System.out.println("3");
+       if (log_all_packets || msg.getLength()>MIN_MESSAGE_LENGTH) printLog("Sending message through conn "+conn_id,Log.LEVEL_HIGH);
       printLog("message:\r\n"+msg.toString(),Log.LEVEL_LOWER);
       TransportConn conn=null;
       for (Enumeration e=sip_transports.elements(); e.hasMoreElements() && conn==null; )
