@@ -56,7 +56,7 @@ public class MainUI{
     public void start(){
         
         if(sipUA==null){
-            sipUA = new SipUA(this);
+            //sipUA = new SipUA(this);
             sipUA.start();
         }
         

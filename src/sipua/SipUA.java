@@ -53,12 +53,13 @@ public class SipUA extends CallListenerAdapter{
     
     int rtpPort;
     
-    MainUI uiRef;
+    //MainUI uiRef;
+    MainWindow uiRef;
     //CallListenerAdapter eventListener;
     
  
     
-    public SipUA(MainUI sipui/*CallListenerAdapter eventListener*/){
+    public SipUA(MainWindow sipui/*CallListenerAdapter eventListener*/){
         //this.eventListener = eventListener;
         uiRef = sipui;
     }
@@ -168,7 +169,7 @@ public class SipUA extends CallListenerAdapter{
             
         }*/;
         
-        System.out.printf("My sip address: %s:%d\n", sipProvider.getViaAddress(), sipProvider.getPort());
+        uiRef.appendMsg(String.format("My sip address: %s:%d\n", sipProvider.getViaAddress(), sipProvider.getPort()));
     }
     
     public void initCall(){
@@ -202,7 +203,7 @@ public class SipUA extends CallListenerAdapter{
         recvSipURL = new SipURL(recvAddress,recvPort);
         recvNameAddress = new NameAddress(recvSipURL);
         
-        System.out.printf("Call %s:%d\n",recvAddress,recvPort);
+        uiRef.appendMsg(String.format("Call %s:%d\n",recvAddress,recvPort));
         callHandler.call(recvNameAddress, "rtp=10001");
         
         //myCall = new Call();
