@@ -68,6 +68,7 @@ public class SipUA extends CallListenerAdapter{
     public void onCallAccepted(Call call, java.lang.String sdp, Message resp){
         //super.onCallAccepted(call, sdp, resp);
         System.err.println("Accepted: "+resp);
+        uiRef.appendLog("<<< "+resp.toString()+"\n");
         call.ackWithAnswer("I GOT IT");
 
 
@@ -79,7 +80,7 @@ public class SipUA extends CallListenerAdapter{
     public void onCallInvite(Call call,NameAddress callee, NameAddress caller, java.lang.String sdp, Message invite){
         //super.onCallInvite(call, callee, caller, sdp, invite);
         System.err.println("Invite: "+invite);
-        //uiRef.appendLog(invite.toString());
+        uiRef.appendLog("<<< "+invite.toString()+"\n");
         call.ring();
         System.out.println();
         if(uiRef.called(invite.getRemoteAddress())){
@@ -101,6 +102,7 @@ public class SipUA extends CallListenerAdapter{
     public void onCallRinging(Call call,Message resp){
         super.onCallRinging(call, resp);
         System.err.println("onCallRinging: "+resp);
+        uiRef.appendLog("<<< "+resp.toString()+"\n");
         //start ring
     }
     
@@ -108,6 +110,7 @@ public class SipUA extends CallListenerAdapter{
     public void onCallConfirmed(Call call, java.lang.String sdp, Message ack){
         super.onCallConfirmed(call, sdp, ack);
         System.err.println("onCallConfirmed: "+ack);
+        uiRef.appendLog("<<< "+ack.toString()+"\n");
         //Callee starts its voice chat here
         initVoiceChat();
     }
@@ -150,10 +153,10 @@ public class SipUA extends CallListenerAdapter{
                 uiRef.appendLog(">>> "+msg.toString()+"\n");
             }
             
-            @Override
-            public synchronized void onReceivedMessage(Transport transport,Message msg){
-                uiRef.appendLog("<<< "+msg.toString()+"\n");
-            }
+            //@Override
+            //public synchronized void onReceivedMessage(Transport transport,Message msg){
+            //    uiRef.appendLog("<<< "+msg.toString()+"\n");
+            //}
             
             
         };
