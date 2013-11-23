@@ -119,6 +119,8 @@ public class VoiceChat {
         threadRunning=false;
         recordLine.drain();
         recordLine.close();
+        playLine.drain();
+        playLine.close();
         
     }
     
@@ -148,10 +150,8 @@ public class VoiceChat {
                     Logger.getLogger(VoiceChat.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            recordLine.drain();
-            recordLine.close();
-            playLine.drain();
-            playLine.close();
+            //recordLine.drain();
+            //recordLine.close();
             System.out.println("Voice send close");
         }
         
@@ -183,8 +183,8 @@ public class VoiceChat {
                     Logger.getLogger(VoiceChat.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            playLine.drain();
-            playLine.close();
+            //playLine.drain();
+            //playLine.close();
             System.out.println("Voice recv close");
         }
         
