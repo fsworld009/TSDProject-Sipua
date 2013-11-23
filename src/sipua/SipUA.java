@@ -76,7 +76,12 @@ public class SipUA extends CallListenerAdapter{
         //if(callHandler.isActive()){
         //    closeVoiceChat();
         //}else{
-            call.ackWithAnswer("I GOT IT");
+        if(callHandler.isOutgoing()){
+            call.ackWithAnswer("");
+        }else if(callHandler.isActive()){
+            //do nothing
+            System.out.println("OK when closing");
+        }
             initVoiceChat();
         //}
     }
@@ -86,15 +91,18 @@ public class SipUA extends CallListenerAdapter{
         //super.onCallInvite(call, callee, caller, sdp, invite);
         //System.err.println("Invite: "+invite);
         uiRef.appendLog("<<< "+invite.toString()+"\n");
-        call.ring();
-        System.out.println();
-        if(uiRef.called(invite.getRemoteAddress())){
-            System.out.println("ACCEPT");
-            call.accept(sdp);
+        if(callHandler.isIdle()){
+            call.ring();
+            //start ring
             
-        }else{
-            System.out.println("DENY");
-            call.refuse();
+            if(uiRef.called(invite.getRemoteAddress())){
+                System.out.println("ACCEPT");
+                call.accept(sdp);
+
+            }else{
+                System.out.println("DENY");
+                call.refuse();
+            }
         }
         //stopring
         
@@ -105,19 +113,24 @@ public class SipUA extends CallListenerAdapter{
     
     @Override
     public void onCallRinging(Call call,Message resp){
-        super.onCallRinging(call, resp);
+        //super.onCallRinging(call, resp);
         //System.err.println("onCallRinging: "+resp);
-        uiRef.appendLog("<<< "+resp.toString()+"\n");
-        //start ring
+        if(callHandler.isOutgoing()){
+            uiRef.appendLog("<<< "+resp.toString()+"\n");
+            //start ring
+        }
+        
     }
     
     @Override
     public void onCallConfirmed(Call call, java.lang.String sdp, Message ack){
-        super.onCallConfirmed(call, sdp, ack);
+        //super.onCallConfirmed(call, sdp, ack);
         //System.err.println("onCallConfirmed: "+ack);
-        uiRef.appendLog("<<< "+ack.toString()+"\n");
-        //Callee starts its voice chat here
-        initVoiceChat();
+        if(callHandler.isIncoming()){
+            uiRef.appendLog("<<< "+ack.toString()+"\n");
+            //Callee starts its voice chat here
+            initVoiceChat();
+        }
     }
     
     @Override
@@ -217,7 +230,7 @@ public class SipUA extends CallListenerAdapter{
         
         uiRef.appendMsg(String.format("Call %s:%d\n",recvAddress,recvPort));
         callHandler.call(recvNameAddress);
-        
+        //System.out.printf("%s\n",callHandler.isOutgoing());
         
         
         
