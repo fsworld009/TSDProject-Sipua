@@ -121,6 +121,7 @@ public class VoiceChat {
         recordLine.close();
         //playLine.drain();
         playLine.close();
+        udpSocket.close();
         rtpSocket.close();
     }
     
