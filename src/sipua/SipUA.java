@@ -73,12 +73,12 @@ public class SipUA extends CallListenerAdapter{
 
 
         //Caller starts its voice chat here
-        if(callHandler.isActive()){
-            closeVoiceChat();
-        }else{
+        //if(callHandler.isActive()){
+        //    closeVoiceChat();
+        //}else{
             call.ackWithAnswer("I GOT IT");
             initVoiceChat();
-        }
+        //}
     }
     
     @Override

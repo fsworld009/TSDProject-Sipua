@@ -84,6 +84,7 @@ public class MainWindow extends JFrame {
         inputPanel.add(cancelButton);
         
         okButton.addActionListener(listener);
+        cancelButton.addActionListener(listener);
         
         gbc = new GridBagConstraints();
         gbc.gridx = 1;
