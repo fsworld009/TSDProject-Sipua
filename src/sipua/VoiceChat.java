@@ -121,7 +121,7 @@ public class VoiceChat {
         recordLine.close();
         //playLine.drain();
         playLine.close();
-        System.out.println("a");
+        rtpSocket.close();
     }
     
     private class MicThread extends Thread{

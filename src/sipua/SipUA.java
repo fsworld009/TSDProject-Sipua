@@ -137,7 +137,7 @@ public class SipUA extends CallListenerAdapter{
     
     @Override
     public void onCallBye(Call call,Message bye){
-        uiRef.appendLog("<<<<<<<< "+bye.toString()+"\n");
+        uiRef.appendLog("<<< "+bye.toString()+"\n");
         //callHandler.accept("");
         this.closeVoiceChat();
     }
@@ -202,7 +202,7 @@ public class SipUA extends CallListenerAdapter{
     public void initCall(){
         callHandler = new Call(sipProvider,myNameAddress,this);
         callHandler.listen();
-        System.out.printf(" init : %s %s %s\n",callHandler.isActive(),callHandler.isClosed(),callHandler.isIdle());
+        //System.out.printf(" init : %s %s %s\n",callHandler.isActive(),callHandler.isClosed(),callHandler.isIdle());
     }
     
     public void start(){       
