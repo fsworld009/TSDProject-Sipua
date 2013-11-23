@@ -67,7 +67,7 @@ public class SipUA extends CallListenerAdapter{
     @Override
     public void onCallAccepted(Call call, java.lang.String sdp, Message resp){
         //super.onCallAccepted(call, sdp, resp);
-        System.err.println("Accepted: "+resp);
+        //System.err.println("Accepted: "+resp);
         uiRef.appendLog("<<< "+resp.toString()+"\n");
         call.ackWithAnswer("I GOT IT");
 
@@ -79,7 +79,7 @@ public class SipUA extends CallListenerAdapter{
     @Override
     public void onCallInvite(Call call,NameAddress callee, NameAddress caller, java.lang.String sdp, Message invite){
         //super.onCallInvite(call, callee, caller, sdp, invite);
-        System.err.println("Invite: "+invite);
+        //System.err.println("Invite: "+invite);
         uiRef.appendLog("<<< "+invite.toString()+"\n");
         call.ring();
         System.out.println();
@@ -101,7 +101,7 @@ public class SipUA extends CallListenerAdapter{
     @Override
     public void onCallRinging(Call call,Message resp){
         super.onCallRinging(call, resp);
-        System.err.println("onCallRinging: "+resp);
+        //System.err.println("onCallRinging: "+resp);
         uiRef.appendLog("<<< "+resp.toString()+"\n");
         //start ring
     }
@@ -109,7 +109,7 @@ public class SipUA extends CallListenerAdapter{
     @Override
     public void onCallConfirmed(Call call, java.lang.String sdp, Message ack){
         super.onCallConfirmed(call, sdp, ack);
-        System.err.println("onCallConfirmed: "+ack);
+        //System.err.println("onCallConfirmed: "+ack);
         uiRef.appendLog("<<< "+ack.toString()+"\n");
         //Callee starts its voice chat here
         initVoiceChat();
@@ -196,7 +196,7 @@ public class SipUA extends CallListenerAdapter{
         recvNameAddress = new NameAddress(recvSipURL);
         
         uiRef.appendMsg(String.format("Call %s:%d\n",recvAddress,recvPort));
-        callHandler.call(recvNameAddress, "rtp=10001");
+        callHandler.call(recvNameAddress);
         
         
         
