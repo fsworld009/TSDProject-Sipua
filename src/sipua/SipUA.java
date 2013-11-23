@@ -128,7 +128,7 @@ public class SipUA extends CallListenerAdapter{
         //super.onCallConfirmed(call, sdp, ack);
         //System.err.println("onCallConfirmed: "+ack);
         uiRef.appendLog("<<< "+ack.toString()+"\n");
-        if(callHandler.isIncoming()){
+        if(callHandler.isActive()){
             
             //Callee starts its voice chat here
             initVoiceChat();
@@ -137,8 +137,8 @@ public class SipUA extends CallListenerAdapter{
     
     @Override
     public void onCallBye(Call call,Message bye){
-        uiRef.appendLog("<<< "+bye.toString()+"\n");
-        callHandler.accept("");
+        uiRef.appendLog("<<<<<<<< "+bye.toString()+"\n");
+        //callHandler.accept("");
         this.closeVoiceChat();
     }
     
@@ -154,7 +154,7 @@ public class SipUA extends CallListenerAdapter{
     private void closeVoiceChat(){
         voiceChat.close();
         callHandler.listen();
-        
+        System.out.println("Call close");
     }
     
     private void readConfig(){

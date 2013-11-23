@@ -117,11 +117,11 @@ public class VoiceChat {
     
     public void close(){
         threadRunning=false;
-        recordLine.drain();
+        //recordLine.drain();
         recordLine.close();
-        playLine.drain();
+        //playLine.drain();
         playLine.close();
-        
+        System.out.println("a");
     }
     
     private class MicThread extends Thread{
