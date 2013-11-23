@@ -78,11 +78,12 @@ public class SipUA extends CallListenerAdapter{
         //}else{
         if(callHandler.isOutgoing()){
             call.ackWithAnswer("");
+            initVoiceChat();
         }else if(callHandler.isActive()){
             //do nothing
             System.out.println("OK when closing");
         }
-            initVoiceChat();
+            
         //}
     }
     
@@ -91,7 +92,7 @@ public class SipUA extends CallListenerAdapter{
         //super.onCallInvite(call, callee, caller, sdp, invite);
         //System.err.println("Invite: "+invite);
         uiRef.appendLog("<<< "+invite.toString()+"\n");
-        if(callHandler.isIdle()){
+        if(callHandler.isIncoming()){
             call.ring();
             //start ring
             
@@ -126,8 +127,9 @@ public class SipUA extends CallListenerAdapter{
     public void onCallConfirmed(Call call, java.lang.String sdp, Message ack){
         //super.onCallConfirmed(call, sdp, ack);
         //System.err.println("onCallConfirmed: "+ack);
+        uiRef.appendLog("<<< "+ack.toString()+"\n");
         if(callHandler.isIncoming()){
-            uiRef.appendLog("<<< "+ack.toString()+"\n");
+            
             //Callee starts its voice chat here
             initVoiceChat();
         }
