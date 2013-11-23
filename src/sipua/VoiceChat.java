@@ -117,6 +117,9 @@ public class VoiceChat {
     
     public void close(){
         threadRunning=false;
+        recordLine.drain();
+        recordLine.close();
+        
     }
     
     private class MicThread extends Thread{
@@ -147,6 +150,8 @@ public class VoiceChat {
             }
             recordLine.drain();
             recordLine.close();
+            playLine.drain();
+            playLine.close();
             System.out.println("Voice send close");
         }
         
