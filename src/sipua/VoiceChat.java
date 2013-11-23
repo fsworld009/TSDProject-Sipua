@@ -115,6 +115,10 @@ public class VoiceChat {
         //receiveThread.start();
     }
     
+    public void close(){
+        threadRunning=false;
+    }
+    
     private class MicThread extends Thread{
         @Override
         public void run(){
@@ -143,6 +147,7 @@ public class VoiceChat {
             }
             recordLine.drain();
             recordLine.close();
+            System.out.println("Voice send close");
         }
         
     }
@@ -175,6 +180,7 @@ public class VoiceChat {
             }
             playLine.drain();
             playLine.close();
+            System.out.println("Voice recv close");
         }
         
     }

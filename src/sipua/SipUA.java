@@ -69,11 +69,16 @@ public class SipUA extends CallListenerAdapter{
         //super.onCallAccepted(call, sdp, resp);
         //System.err.println("Accepted: "+resp);
         uiRef.appendLog("<<< "+resp.toString()+"\n");
-        call.ackWithAnswer("I GOT IT");
+        
 
 
         //Caller starts its voice chat here
-        initVoiceChat();
+        if(callHandler.isActive()){
+            closeVoiceChat();
+        }else{
+            call.ackWithAnswer("I GOT IT");
+            initVoiceChat();
+        }
     }
     
     @Override
@@ -115,11 +120,24 @@ public class SipUA extends CallListenerAdapter{
         initVoiceChat();
     }
     
+    @Override
+    public void onCallBye(Call call,Message bye){
+        uiRef.appendLog("<<< "+bye.toString()+"\n");
+        //callHandler.accept("ok");
+        this.closeVoiceChat();
+    }
+    
     private void initVoiceChat(){
-        voiceChat = new VoiceChat();
+        if(voiceChat==null){
+            voiceChat = new VoiceChat();
+        }
         voiceChat.init(recvAddress, rtpPort);
         voiceChat.start();
 
+    }
+    
+    private void closeVoiceChat(){
+        voiceChat.close();
     }
     
     private void readConfig(){
@@ -204,6 +222,11 @@ public class SipUA extends CallListenerAdapter{
         //myCall = new Call();
         //myCall.call(recvNameAddress);
 
+    }
+    
+    public void closeCall(){
+        callHandler.hangup();
+        this.closeVoiceChat();
     }
 
 

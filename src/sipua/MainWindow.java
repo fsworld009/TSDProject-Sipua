@@ -61,7 +61,7 @@ public class MainWindow extends JFrame {
         logPane.setEditable(false);
         JScrollPane logScrollPane = new JScrollPane(logPane);
         okButton = new JButton("Call");
-        cancelButton = new JButton("Cancel");
+        cancelButton = new JButton("Close");
         listener = new GUIActionListener();
         
         setLayout(new GridBagLayout());
@@ -146,6 +146,8 @@ public class MainWindow extends JFrame {
                     }else{
                         appendMsg("Input format error");
                     }
+                }else if(e.getSource() == MainWindow.this.cancelButton){
+                    sipUA.closeCall();
                 }
             }
     }
