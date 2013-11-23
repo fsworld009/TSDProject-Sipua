@@ -76,10 +76,10 @@ public class SipUA extends CallListenerAdapter{
         //if(callHandler.isActive()){
         //    closeVoiceChat();
         //}else{
-        if(callHandler.isOutgoing()){
+        if(callHandler.isActive()){
             call.ackWithAnswer("");
             initVoiceChat();
-        }else if(callHandler.isActive()){
+        }else if(callHandler.isClosed()){
             //do nothing
             System.out.println("OK when closing");
         }
@@ -138,7 +138,7 @@ public class SipUA extends CallListenerAdapter{
     @Override
     public void onCallBye(Call call,Message bye){
         uiRef.appendLog("<<< "+bye.toString()+"\n");
-        //callHandler.accept("ok");
+        callHandler.accept("");
         this.closeVoiceChat();
     }
     
@@ -153,6 +153,7 @@ public class SipUA extends CallListenerAdapter{
     
     private void closeVoiceChat(){
         voiceChat.close();
+        callHandler.listen();
         
     }
     
@@ -246,7 +247,7 @@ public class SipUA extends CallListenerAdapter{
         callHandler.hangup();
         this.closeVoiceChat();
         //System.out.printf(" after hang up: %s %s %s\n",callHandler.isActive(),callHandler.isClosed(),callHandler.isIdle());
-        callHandler.listen();
+        
         //System.out.printf(" after listen: %s %s %s\n",callHandler.isActive(),callHandler.isClosed(),callHandler.isIdle());
     }
 
