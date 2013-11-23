@@ -138,7 +138,7 @@ public class SipUA extends CallListenerAdapter{
     
     private void closeVoiceChat(){
         voiceChat.close();
-        callHandler.listen();
+        
     }
     
     private void readConfig(){
@@ -186,6 +186,7 @@ public class SipUA extends CallListenerAdapter{
     public void initCall(){
         callHandler = new Call(sipProvider,myNameAddress,this);
         callHandler.listen();
+        System.out.printf(" init : %s %s %s\n",callHandler.isActive(),callHandler.isClosed(),callHandler.isIdle());
     }
     
     public void start(){       
@@ -226,8 +227,12 @@ public class SipUA extends CallListenerAdapter{
     }
     
     public void closeCall(){
+        //System.out.printf(" before hang up: %s %s %s\n",callHandler.isActive(),callHandler.isClosed(),callHandler.isIdle());
         callHandler.hangup();
         this.closeVoiceChat();
+        //System.out.printf(" after hang up: %s %s %s\n",callHandler.isActive(),callHandler.isClosed(),callHandler.isIdle());
+        callHandler.listen();
+        //System.out.printf(" after listen: %s %s %s\n",callHandler.isActive(),callHandler.isClosed(),callHandler.isIdle());
     }
 
 
