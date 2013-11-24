@@ -55,6 +55,7 @@ public class WebMiddleMan implements TcpSocketEventListener, SipUAEventListener 
     @Override
     public void onCallBye() {
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        socket.send("BYE");
     }
 
     @Override
