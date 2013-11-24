@@ -42,6 +42,7 @@ import java.io.OutputStream;
 
         private void createContent(){
             httpServer.createContext("/login.html", new Login());
+            httpServer.createContext("/login_check.html", new Login_check());
 
         }
         
@@ -72,6 +73,46 @@ import java.io.OutputStream;
                 //os.write(os.getBytes());
                 os.close();
                 br.close();
+                
+            }
+        }
+        
+        private static class Login_check implements HttpHandler {
+            public void handle(HttpExchange t) throws IOException {
+              //String response = "Test HttpServer";
+                
+                InputStreamReader is = new InputStreamReader(t.getRequestBody(),"utf-8");
+                BufferedReader reader = new BufferedReader(is);
+                String post = reader.readLine();
+                System.out.println(post);
+                String password="";
+                if(post != null){
+                    String[] spl1 = post.split("&");
+                    String[] spl2 = spl1[0].split("=");
+                    //System.out.println(spl2[1]);
+                    password = spl2[1];
+                }
+                if(password.equals("1234")){
+                    System.out.println("login succeed");
+                }else{
+                    OutputStream os = t.getResponseBody();
+                    //InputStream is = new InputStream(new FileReader("index.html"));
+                    File webpage = new File("login_failed.html");
+                    BufferedReader br = new BufferedReader(new FileReader(webpage));
+
+                    t.sendResponseHeaders(200, webpage.length());
+                    
+
+                    String line;
+                    while((line = br.readLine()) != null)
+                    {
+                        os.write(line.getBytes());
+                    }
+
+                    //os.write(os.getBytes());
+                    os.close();
+                    br.close();
+                }
                 
             }
         }
