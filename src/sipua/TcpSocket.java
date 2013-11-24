@@ -136,7 +136,9 @@ public class TcpSocket {
         public void run(){
             try {
                 while(serverThreadRunning){
+                    System.out.println("TcpSocket:Listen");
                     socket = serverSocket.accept();
+                    System.out.println(socket.getInetAddress().getHostAddress());
                         if(socket.getInetAddress().getHostAddress().equals(allowIp)){
                             System.out.println("TcpSocket:Accept");
                             eventListener.onAccept();

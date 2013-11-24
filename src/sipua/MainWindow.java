@@ -179,12 +179,14 @@ public class MainWindow extends JFrame {
     public void remoteLogin(String ip){
         //remoteIp = ip;
         System.out.println(ip);
-        if(webMiddleMan == null){
+        //if(webMiddleMan == null){
             webMiddleMan = new WebMiddleMan();
-        }else{
-            webMiddleMan.closeServer();
-        }
-        webMiddleMan.start(ip);
+        //}else{
+        //    webMiddleMan.closeServer();
+       // }
+            
+        //temp
+        webMiddleMan.start("127.0.0.1");
     }
     
 
