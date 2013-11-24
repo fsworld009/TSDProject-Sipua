@@ -13,7 +13,9 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -50,7 +52,14 @@ public class MainWindow extends JFrame {
     }
     
     public boolean called(String addr){
-        return true;
+        //JDialog dialog = new JDialog(this,"You got a call from"+addr);
+        //dialog.set
+        if(JOptionPane.showConfirmDialog(this,"You got a call from"+addr,"New call",JOptionPane.YES_NO_OPTION)== JOptionPane.YES_OPTION){
+            return true;
+        }else{
+            return false;
+        }
+        
     }
     
     private void initComponents(){

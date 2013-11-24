@@ -70,6 +70,8 @@ public class SipUA extends CallListenerAdapter{
         //System.err.println("Accepted: "+resp);
         uiRef.appendLog("<<< "+resp.toString()+"\n");
         
+        //stop ring
+        
 
 
         //Caller starts its voice chat here
@@ -85,6 +87,12 @@ public class SipUA extends CallListenerAdapter{
         }
             
         //}
+    }
+    
+    @Override
+    public void onCallRefused(Call call, java.lang.String reason, Message resp){
+        callHandler.hangup();
+        callHandler.listen();
     }
     
     @Override
@@ -242,10 +250,18 @@ public class SipUA extends CallListenerAdapter{
 
     }
     
+    
+    
+    
+    
     public void closeCall(){
         //System.out.printf(" before hang up: %s %s %s\n",callHandler.isActive(),callHandler.isClosed(),callHandler.isIdle());
-        callHandler.hangup();
-        this.closeVoiceChat();
+        if(callHandler.isActive()){
+            callHandler.hangup();
+            this.closeVoiceChat();
+        }else if(callHandler.isOutgoing()){
+            callHandler.hangup();
+        }
         //System.out.printf(" after hang up: %s %s %s\n",callHandler.isActive(),callHandler.isClosed(),callHandler.isIdle());
         
         //System.out.printf(" after listen: %s %s %s\n",callHandler.isActive(),callHandler.isClosed(),callHandler.isIdle());
