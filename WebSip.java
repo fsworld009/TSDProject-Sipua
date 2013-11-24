@@ -23,7 +23,7 @@ import javax.sound.sampled.TargetDataLine;
 
  
  //The applet code
- public class WebSip extends Applet {
+ public class WebSip/* extends Applet*/ {
      //VoiceChat vc = new VoiceChat();
      //vc.init();
     //MicThread micThread;
@@ -60,36 +60,45 @@ import javax.sound.sampled.TargetDataLine;
     }
      
      public void start(){
-         init("",10);
-         //micThread = new MicThread();
-         threadRunning=true;
-         //micThread.start();
-            recordLine.start();
-            playLine.start();
-            int count;
-            while(threadRunning){
-                try {
-                    count = recordLine.read(sendBuffer, 0, sendBuffer.length);
-                    if (count > 0) {
-                      //System.out.printf("RECORDED: %s\n", sendBuffer);
-                      //RtpPacket rtpPacket= new RtpPacket(sendBuffer,sendBuffer.length);
-                      //rtpSocket.send(rtpPacket);
-                      //recordLine.drain();
-                        playLine.write(sendBuffer, 0, bufferSize);
-                    }
-                    Thread.sleep(5);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(WebSip.class.getName()).log(Level.SEVERE, null, ex);
-                //} catch (IOException ex) {
-                //    Logger.getLogger(VoiceChat.class.getName()).log(Level.SEVERE, null, ex);
+        init("",10);
+        //micThread = new MicThread();
+        threadRunning=true;
+        try {
+            //micThread.start();
+               recordLine.open(audioFormat);
+               playLine.open(audioFormat);
+        } catch (LineUnavailableException ex) {
+            Logger.getLogger(WebSip.class.getName()).log(Level.SEVERE, null, ex);
+        }
+            
+        recordLine.start();
+        playLine.start();
+        int count;
+        while(threadRunning){
+                //System.out.println("run");
+            try {
+                count = recordLine.read(sendBuffer, 0, sendBuffer.length);
+                if (count > 0) {
+                  System.out.printf("RECORDED: %s\n", sendBuffer);
+                  //RtpPacket rtpPacket= new RtpPacket(sendBuffer,sendBuffer.length);
+                  //rtpSocket.send(rtpPacket);
+                  //recordLine.drain();
+                    playLine.write(sendBuffer, 0, bufferSize);
                 }
+                Thread.sleep(5);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(WebSip.class.getName()).log(Level.SEVERE, null, ex);
+            //} catch (IOException ex) {
+            //    Logger.getLogger(VoiceChat.class.getName()).log(Level.SEVERE, null, ex);
             }
+        }
      }
      
      
     public void init(String address, int port){
         //connectAddress = address;
         //connectPort = port;
+        System.out.println("init2");
         try {        
             //udpSocket = new UdpSocket(connectPort);
             //rtpSocket = new RtpSocket(udpSocket,IpAddress.getByName(connectAddress),connectPort);
@@ -133,6 +142,11 @@ import javax.sound.sampled.TargetDataLine;
 
         
     } 
+    
+    public static void main(String[] args){
+        WebSip websip = new WebSip();
+        websip.start();
+    }
     
     
     /*
