@@ -32,15 +32,17 @@ public class TcpSocket {
     private BufferedReader reader;
     private TcpSocketEventListener eventListener;
     private LinkedList<String> message;
-    
+    private String allowIp;
+    private boolean serverThreadRunning = false;
 
     
     public TcpSocket(){
         message = new LinkedList<String>();
     }
     
-    public void startServer(int tcpPort){
+    public void startServer(String ip, int tcpPort){
         //threadRunning=true;
+        allowIp = ip;
         if(serverSocket==null){
             try {
                 serverSocket = new ServerSocket(tcpPort);
@@ -49,6 +51,7 @@ public class TcpSocket {
                 Logger.getLogger(TcpSocket.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        serverThreadRunning=true;
         ssThread = new ServerSocketThread();
         ssThread.start();
     }
@@ -101,6 +104,7 @@ public class TcpSocket {
     
     public void closeServer(){
         threadRunning=false;
+        serverThreadRunning=false;
         try {
             serverSocket.close();
             if(socket != null ){
@@ -114,7 +118,7 @@ public class TcpSocket {
                 reader.close();
             }
         } catch (IOException ex) {
-            Logger.getLogger(TcpSocket.class.getName()).log(Level.SEVERE, null, ex);
+            //Logger.getLogger(TcpSocket.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -131,13 +135,20 @@ public class TcpSocket {
     private class ServerSocketThread extends Thread{
         public void run(){
             try {
-                socket = serverSocket.accept();
-                System.out.println("TcpSocket:Accept");
-                eventListener.onAccept();
-                startSocketThread();
-                
+                while(serverThreadRunning){
+                    socket = serverSocket.accept();
+                        if(socket.getInetAddress().getHostAddress().equals(allowIp)){
+                            System.out.println("TcpSocket:Accept");
+                            eventListener.onAccept();
+                            startSocketThread();
+                        }else{
+                            socket.close();
+                        }
+
+                    
+                }
             } catch (IOException ex) {
-                Logger.getLogger(TcpSocket.class.getName()).log(Level.SEVERE, null, ex);
+                //Logger.getLogger(TcpSocket.class.getName()).log(Level.SEVERE, null, ex);
             } 
         }
     }
@@ -159,9 +170,10 @@ public class TcpSocket {
                 }
                 
             } catch (InterruptedException ex) {
-                Logger.getLogger(TcpSocket.class.getName()).log(Level.SEVERE, null, ex);
+                //Logger.getLogger(TcpSocket.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IOException ex) {
-                Logger.getLogger(TcpSocket.class.getName()).log(Level.SEVERE, null, ex);
+                
+                //Logger.getLogger(TcpSocket.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
@@ -180,9 +192,10 @@ public class TcpSocket {
                 }
                 
             } catch (InterruptedException ex) {
-                Logger.getLogger(TcpSocket.class.getName()).log(Level.SEVERE, null, ex);
+                //Logger.getLogger(TcpSocket.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IOException ex) {
-                Logger.getLogger(TcpSocket.class.getName()).log(Level.SEVERE, null, ex);
+                
+                //Logger.getLogger(TcpSocket.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }

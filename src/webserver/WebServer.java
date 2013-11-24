@@ -33,6 +33,7 @@ import sipua.MainWindow;
         private int httpPort = 9527;
         private VoiceWarper voiceWarper;
         private MainWindow uiRef;
+        private String password="1234";
         
         
         public WebServer(MainWindow ref){
@@ -168,7 +169,7 @@ import sipua.MainWindow;
             }
         }
         
-        private static class Login_check implements HttpHandler {
+        private class Login_check implements HttpHandler {
             public void handle(HttpExchange t) throws IOException {
               //String response = "Test HttpServer";
                 
@@ -183,9 +184,12 @@ import sipua.MainWindow;
                     //System.out.println(spl2[1]);
                     password = spl2[1];
                 }
-                if(password.equals("1234")){
+                if(password.equals(password)){
                     System.out.println("login succeed");
-                    WebServer.WriteHTML("WebSip.html", t);
+                    uiRef.remoteLogin(t.getRemoteAddress().getHostName());
+                    WebServer.WriteHTML("index.html", t);  //temp
+                    //
+                    System.out.println("login succeed");
                 }else{
                     WebServer.WriteHTML("login_failed.html", t);
                 }

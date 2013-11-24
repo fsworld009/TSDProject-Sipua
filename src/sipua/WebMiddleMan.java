@@ -5,10 +5,12 @@ package sipua;
 public class WebMiddleMan implements TcpSocketEventListener {
     private TcpSocket socket;
     private int tcpPort=10002;
-    public void start(){
+    //private String remoteIp;
+    public void start(String ip){
+        //remoteIp = ip;
         socket = new TcpSocket();
         socket.registerEventListener(this);
-        socket.startServer(tcpPort);
+        socket.startServer(ip,tcpPort);
     }
 
     @Override
@@ -24,6 +26,10 @@ public class WebMiddleMan implements TcpSocketEventListener {
     @Override
     public void onReceive(String msg) {
         
+    }
+    
+    public void closeServer(){
+        socket.closeServer();
     }
     
 }
