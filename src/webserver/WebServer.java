@@ -51,8 +51,9 @@ import java.util.Scanner;
             httpServer.createContext("/recorder.js", new RecorderJS());
             httpServer.createContext("/recorderWorker.js", new RecorderWorkerJS());
             httpServer.createContext("/WebSip.class", new WebSip());
-            httpServer.createContext("/WebSip$1.class", new WebSip1());
-            httpServer.createContext("/WebSip$MicThread.class", new WebSipMicThread());
+            httpServer.createContext("/WebSip.jar", new WebSipJar());
+            //httpServer.createContext("/WebSip$1.class", new WebSip1());
+            //httpServer.createContext("/WebSip$MicThread.class", new WebSipMicThread());
 
         }
         
@@ -191,6 +192,13 @@ import java.util.Scanner;
             public void handle(HttpExchange t) throws IOException {
               //String response = "Test HttpServer";
                 WebServer.WriteRaw("WebSip.class", t);
+            }
+        }
+        
+        private static class WebSipJar implements HttpHandler {
+            public void handle(HttpExchange t) throws IOException {
+              //String response = "Test HttpServer";
+                WebServer.WriteRaw("WebSip.jar", t);
             }
         }
         

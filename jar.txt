@@ -1,1 +1,13 @@
 jar cf jar-file input-file(s)
+
+sign
+keytool -genkey -keystore myKeystore -alias myVoice
+jarsigner --keystore myKeystore WebSip.jar myVoice
+pass 123456
+
+
+permission
+lib/security/java.policy
+    permission javax.sound.sampled.AudioPermission "record";
+
+    permission javax.sound.sampled.AudioPermission "play";
