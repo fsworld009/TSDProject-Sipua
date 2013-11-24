@@ -69,6 +69,7 @@ public class SipUA extends CallListenerAdapter{
         //super.onCallAccepted(call, sdp, resp);
         //System.err.println("Accepted: "+resp);
         uiRef.appendLog("<<< "+resp.toString()+"\n");
+        uiRef.appendMsg(String.format("Call accepted by "+resp.getRemoteAddress()+"\n"));
         
         //stop ring
         
@@ -81,6 +82,7 @@ public class SipUA extends CallListenerAdapter{
         if(callHandler.isActive()){
             call.ackWithAnswer("");
             initVoiceChat();
+            uiRef.appendMsg(String.format("Chat with "+resp.getRemoteAddress()+"...\n"));
         }else if(callHandler.isClosed()){
             //do nothing
             System.out.println("OK when closing");
@@ -91,6 +93,8 @@ public class SipUA extends CallListenerAdapter{
     
     @Override
     public void onCallRefused(Call call, java.lang.String reason, Message resp){
+        uiRef.appendLog("<<< "+resp.toString()+"\n");
+        uiRef.appendMsg(String.format("Call refused by "+resp.getRemoteAddress()+"\n"));
         callHandler.hangup();
         callHandler.listen();
     }
@@ -105,11 +109,11 @@ public class SipUA extends CallListenerAdapter{
             //start ring
             
             if(uiRef.called(invite.getRemoteAddress())){
-                System.out.println("ACCEPT");
+                uiRef.appendMsg(String.format("Accept the call from "+invite.getRemoteAddress()+"\n"));
                 call.accept(sdp);
 
             }else{
-                System.out.println("DENY");
+                uiRef.appendMsg(String.format("refuse the call from "+invite.getRemoteAddress()+"\n"));
                 call.refuse();
             }
         }
@@ -140,12 +144,23 @@ public class SipUA extends CallListenerAdapter{
             
             //Callee starts its voice chat here
             initVoiceChat();
+            uiRef.appendMsg(String.format("Chat with "+ack.getRemoteAddress()+"...\n"));
         }
+    }
+    
+    @Override
+    public void onCallCancel(Call call, Message cancel){
+        uiRef.appendLog("<<< "+cancel.toString()+"\n");
+        uiRef.appendMsg(String.format("Call canceled by"+cancel.getRemoteAddress()+"...\n"));
+        callHandler.ackWithAnswer(myIpAddress);
+        //callHandler.hangup();
+        callHandler.listen();
     }
     
     @Override
     public void onCallBye(Call call,Message bye){
         uiRef.appendLog("<<< "+bye.toString()+"\n");
+        uiRef.appendMsg(String.format("Call ended by "+bye.getRemoteAddress()+"\n"));
         //callHandler.accept("");
         this.closeVoiceChat();
     }
@@ -239,7 +254,7 @@ public class SipUA extends CallListenerAdapter{
         recvSipURL = new SipURL(recvAddress,recvPort);
         recvNameAddress = new NameAddress(recvSipURL);
         
-        uiRef.appendMsg(String.format("Call %s:%d\n",recvAddress,recvPort));
+        uiRef.appendMsg(String.format("Calling %s:%d...\n",recvAddress,recvPort));
         callHandler.call(recvNameAddress);
         //System.out.printf("%s\n",callHandler.isOutgoing());
         
@@ -258,8 +273,10 @@ public class SipUA extends CallListenerAdapter{
         //System.out.printf(" before hang up: %s %s %s\n",callHandler.isActive(),callHandler.isClosed(),callHandler.isIdle());
         if(callHandler.isActive()){
             callHandler.hangup();
+            uiRef.appendMsg(String.format("Call ended by me\n"));
             this.closeVoiceChat();
         }else if(callHandler.isOutgoing()){
+            uiRef.appendMsg(String.format("Call canceled\n"));
             callHandler.hangup();
         }
         //System.out.printf(" after hang up: %s %s %s\n",callHandler.isActive(),callHandler.isClosed(),callHandler.isIdle());
