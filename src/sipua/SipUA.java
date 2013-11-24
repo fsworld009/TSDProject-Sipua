@@ -50,13 +50,18 @@ public class SipUA extends CallListenerAdapter{
     NameAddress recvNameAddress;
     
     VoiceChat voiceChat;
+    VoiceForwarder voiceForwarder;
     
     int rtpPort;
+    String remoteAddress;
     
     //MainUI uiRef;
     MainWindow uiRef;
     //CallListenerAdapter eventListener;
     SipUAEventListener eventListener=null;
+    
+    private int remoteRtpPort;
+    
             
     public void addEventListener(SipUAEventListener ls){
         eventListener = ls;
@@ -196,16 +201,38 @@ public class SipUA extends CallListenerAdapter{
     }
     
     private void initVoiceChat(){
-        if(voiceChat==null){
-            voiceChat = new VoiceChat();
+        if(eventListener == null){
+            if(voiceChat==null){
+                voiceChat = new VoiceChat();
+            }
+            voiceChat.init(recvAddress, rtpPort);
+            voiceChat.start();
+        }else{
+            //remote control, use voice forwarder
+            if(voiceForwarder==null){
+                voiceForwarder = new VoiceForwarder();
+            }
+            voiceForwarder.init(remoteAddress, remoteRtpPort, recvAddress, rtpPort);
+            voiceForwarder.start();
         }
-        voiceChat.init(recvAddress, rtpPort);
-        voiceChat.start();
 
     }
     
+    public void remoteRTPAddress(String addr, int rport){
+        remoteRtpPort = rport;
+        remoteAddress = addr;
+    }
+    
     private void closeVoiceChat(){
-        voiceChat.close();
+
+        
+        
+        if(eventListener == null){
+            voiceChat.close();
+        }else{
+            //remote control, use voice forwarder
+            voiceForwarder.close();
+        }
         callHandler.listen();
         System.out.println("Call close");
     }

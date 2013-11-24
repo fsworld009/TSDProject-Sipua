@@ -57,7 +57,7 @@ public class VoiceForwarder {
     //SourceDataLine playLine;
     
     
-    public void init(String webAddress, String sipAddress, int sipPort, int webPort){
+    public void init(String webAddress, int webPort, String sipAddress, int sipPort){
         this.sipAddress = sipAddress;
         this.webAddress = webAddress;
         this.sipPort = sipPort;
@@ -65,6 +65,9 @@ public class VoiceForwarder {
         try {        
             sipUdpSocket = new UdpSocket(sipPort);
             sipRtpSocket = new RtpSocket(sipUdpSocket,IpAddress.getByName(this.sipAddress),sipPort);
+            
+            webUdpSocket = new UdpSocket(webPort);
+            webRtpSocket = new RtpSocket(webUdpSocket,IpAddress.getByName(this.webAddress),webPort);
             
             
             audioFormat = new AudioFormat(8000,8,2,true,true);
@@ -130,6 +133,8 @@ public class VoiceForwarder {
         //playLine.close();
         sipUdpSocket.close();
         sipRtpSocket.close();
+        webUdpSocket.close();
+        webRtpSocket.close();
     }
     
     private class WebToSipThread extends Thread{
