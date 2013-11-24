@@ -56,6 +56,11 @@ public class SipUA extends CallListenerAdapter{
     //MainUI uiRef;
     MainWindow uiRef;
     //CallListenerAdapter eventListener;
+    SipUAEventListener eventListener;
+            
+    public void addEventListener(SipUAEventListener ls){
+        eventListener = ls;
+    }
     
  
     

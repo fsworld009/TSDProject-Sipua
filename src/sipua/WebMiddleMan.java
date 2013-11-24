@@ -2,7 +2,7 @@
 package sipua;
 
 
-public class WebMiddleMan implements TcpSocketEventListener {
+public class WebMiddleMan implements TcpSocketEventListener, SipUAEventListener {
     private TcpSocket socket;
     private int tcpPort=10002;
     //private String remoteIp;
@@ -38,6 +38,41 @@ public class WebMiddleMan implements TcpSocketEventListener {
     
     public void closeServer(){
         socket.closeServer();
+    }
+
+    @Override
+    public void onCallAccepted() {
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void onCallBye() {
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void onCallCancel() {
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void onCallConfirmed() {
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void onCallInvite() {
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void onCallRefused() {
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void onCallRinging() {
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }
