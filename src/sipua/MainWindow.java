@@ -20,7 +20,7 @@ import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
 import javax.swing.text.BadLocationException;
-
+import webserver.WebServer;
 
 public class MainWindow extends JFrame {
     
@@ -32,6 +32,7 @@ public class MainWindow extends JFrame {
     private GUIActionListener listener;
     private SipUA sipUA;
     private int state;  //0=caller, 1=callee
+    private WebServer webServer;
     
     public MainWindow(){
         super("Simple Sip UA");
@@ -44,6 +45,8 @@ public class MainWindow extends JFrame {
         initComponents();
         sipUA = new SipUA(this);
         sipUA.start();
+        webServer=new WebServer();
+        webServer.start();
     }
     
     public boolean called(String addr){
