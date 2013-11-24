@@ -5,12 +5,14 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
     import com.sun.net.httpserver.HttpServer;
     import java.io.BufferedReader;
+import java.io.File;
     import java.io.InputStreamReader;
     import java.io.PrintWriter;
     import java.net.ServerSocket;
     import java.net.Socket;
     import java.io.FileReader;
     import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
     import java.net.InetSocketAddress;
     import java.util.logging.Level;
@@ -39,7 +41,7 @@ import java.io.OutputStream;
         }  
 
         private void createContent(){
-            httpServer.createContext("/index.html", new Index());
+            httpServer.createContext("/login.html", new Login());
 
         }
         
@@ -49,13 +51,28 @@ import java.io.OutputStream;
             httpServer.start();
         }
 
-        private static class Index implements HttpHandler {
+        private static class Login implements HttpHandler {
             public void handle(HttpExchange t) throws IOException {
-              String response = "Test HttpServer";
-              t.sendResponseHeaders(200, response.length());
-              OutputStream os = t.getResponseBody();
-              os.write(response.getBytes());
-              os.close();
+              //String response = "Test HttpServer";
+                
+                
+                OutputStream os = t.getResponseBody();
+                //InputStream is = new InputStream(new FileReader("index.html"));
+                File webpage = new File("login.html");
+                BufferedReader br = new BufferedReader(new FileReader(webpage));
+                
+                t.sendResponseHeaders(200, webpage.length());
+                
+                String line;
+                while((line = br.readLine()) != null)
+                {
+                    os.write(line.getBytes());
+                }
+              
+                //os.write(os.getBytes());
+                os.close();
+                br.close();
+                
             }
         }
 
