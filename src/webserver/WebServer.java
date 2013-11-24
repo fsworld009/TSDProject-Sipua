@@ -21,6 +21,7 @@ import java.io.OutputStream;
 import java.util.Scanner;
     import java.util.logging.Level;
     import java.util.logging.Logger;
+import sipua.MainWindow;
 
     public class WebServer {
 
@@ -30,6 +31,13 @@ import java.util.Scanner;
         private HttpServer httpServer;
         private int httpPort = 9527;
         private VoiceWarper voiceWarper;
+        private MainWindow uiRef;
+        
+        
+        public WebServer(MainWindow ref){
+            uiRef = ref;
+        }
+        
         public void init(){
               try {
                   /*try {

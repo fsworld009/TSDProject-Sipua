@@ -50,7 +50,7 @@ public class MainWindow extends JFrame {
         initComponents();
         sipUA = new SipUA(this);
         sipUA.start();
-        webServer=new WebServer();
+        webServer=new WebServer(this);
         webServer.start();
         
     }
