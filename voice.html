@@ -14,6 +14,9 @@
             var context = new webkitAudioContext();
             var mediaStreamSource = context.createMediaStreamSource(stream);
             recorder = new Recorder(mediaStreamSource);
+            //var config={sampleRate:8000};
+            //console.log(config.sampleRate);
+            //recorder.init(config);
             recorder.record();
 			//window.AudioContext = window.AudioContext || window.webkitAudioContext;
 			//var audioContext = new AudioContext();
@@ -29,7 +32,8 @@
 		navigator.getUserMedia( micConstraints, gotStream );
         
         function test(buffer){
-            console.log("test"+buffer);
+            console.log(buffer[0].length);
+            console.log(buffer[1].length);
         }
 
 		</script>
@@ -38,5 +42,6 @@
 		<div style="float:left"> 
 		<p><a href="#" onClick="recorder.getBuffer(test)">TEST</a></p>
 		</div>
+        <div id="buffer">AAA</div>
 	</body>
 </html>

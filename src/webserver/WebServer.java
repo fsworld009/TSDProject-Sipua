@@ -1,11 +1,14 @@
     //A Simple Web Server (WebServer.java)
 package webserver;
 
+import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
     import com.sun.net.httpserver.HttpServer;
+import java.io.BufferedInputStream;
     import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
     import java.io.InputStreamReader;
     import java.io.PrintWriter;
     import java.net.ServerSocket;
@@ -47,6 +50,9 @@ import java.util.Scanner;
             httpServer.createContext("/login_check.html", new Login_check());
             httpServer.createContext("/recorder.js", new RecorderJS());
             httpServer.createContext("/recorderWorker.js", new RecorderWorkerJS());
+            httpServer.createContext("/WebSip.class", new WebSip());
+            httpServer.createContext("/WebSip$1.class", new WebSip1());
+            httpServer.createContext("/WebSip$MicThread.class", new WebSipMicThread());
 
         }
         
@@ -112,6 +118,26 @@ import java.util.Scanner;
             //webpageReader.close();
         }
         
+        private static void WriteRaw(String filepath, HttpExchange t) throws IOException{
+                  // add the required response header for a PDF file
+            Headers h = t.getResponseHeaders();
+            h.add("Content-Type", "application/java-archive");
+
+            // a PDF (you provide your own!)
+            File file = new File ("WebSip.class");
+            byte [] bytearray  = new byte [(int)file.length()];
+            FileInputStream fis = new FileInputStream(file);
+            BufferedInputStream bis = new BufferedInputStream(fis);
+            bis.read(bytearray, 0, bytearray.length);
+
+            // ok, we are ready to send the response.
+            t.sendResponseHeaders(200, file.length());
+            OutputStream os = t.getResponseBody();
+            os.write(bytearray,0,bytearray.length);
+            os.close();
+            fis.close();
+        }
+        
         
 
         private static class Login implements HttpHandler {
@@ -139,7 +165,7 @@ import java.util.Scanner;
                 }
                 if(password.equals("1234")){
                     System.out.println("login succeed");
-                    WebServer.WriteHTML("voice.html", t);
+                    WebServer.WriteHTML("WebSip.html", t);
                 }else{
                     WebServer.WriteHTML("login_failed.html", t);
                 }
@@ -158,6 +184,27 @@ import java.util.Scanner;
             public void handle(HttpExchange t) throws IOException {
               //String response = "Test HttpServer";
                 WebServer.WriteJS("recorderWorker.js", t);
+            }
+        }
+        
+        private static class WebSip implements HttpHandler {
+            public void handle(HttpExchange t) throws IOException {
+              //String response = "Test HttpServer";
+                WebServer.WriteRaw("WebSip.class", t);
+            }
+        }
+        
+        private static class WebSip1 implements HttpHandler {
+            public void handle(HttpExchange t) throws IOException {
+              //String response = "Test HttpServer";
+                WebServer.WriteRaw("WebSip$1.class", t);
+            }
+        }
+        
+        private static class WebSipMicThread implements HttpHandler {
+            public void handle(HttpExchange t) throws IOException {
+              //String response = "Test HttpServer";
+                WebServer.WriteRaw("WebSip$MicThread.class", t);
             }
         }
 
