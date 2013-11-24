@@ -23,7 +23,7 @@ import javax.sound.sampled.TargetDataLine;
 
  
  //The applet code
- public class WebSip/* extends Applet*/ {
+ public class WebSip extends Applet {
      //VoiceChat vc = new VoiceChat();
      //vc.init();
     //MicThread micThread;
@@ -143,10 +143,10 @@ import javax.sound.sampled.TargetDataLine;
         
     } 
     
-    public static void main(String[] args){
-        WebSip websip = new WebSip();
-        websip.start();
-    }
+    //public static void main(String[] args){
+   //     WebSip websip = new WebSip();
+    //    websip.start();
+    //}
     
     
     /*
