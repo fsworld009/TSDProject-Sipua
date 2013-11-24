@@ -188,12 +188,13 @@ public class MainWindow extends JFrame {
         //remoteIp = ip;
         System.out.println(ip);
         if(webMiddleMan == null){
-            webMiddleMan = new WebMiddleMan(this);
+            webMiddleMan = new WebMiddleMan(this,sipUA);
         }else{
             webMiddleMan.closeServer();
          }
             
         //temp
+        sipUA.addEventListener(webMiddleMan);
         webMiddleMan.start(ip);
     }
     

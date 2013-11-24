@@ -56,7 +56,7 @@ public class SipUA extends CallListenerAdapter{
     //MainUI uiRef;
     MainWindow uiRef;
     //CallListenerAdapter eventListener;
-    SipUAEventListener eventListener;
+    SipUAEventListener eventListener=null;
             
     public void addEventListener(SipUAEventListener ls){
         eventListener = ls;
@@ -99,6 +99,9 @@ public class SipUA extends CallListenerAdapter{
         }
             
         //}
+        if(eventListener != null){
+            eventListener.onCallAccepted();
+        }
     }
     
     @Override
@@ -107,6 +110,9 @@ public class SipUA extends CallListenerAdapter{
         uiRef.appendMsg(String.format("Call refused by "+resp.getRemoteAddress()+"\n"));
         callHandler.ackWithAnswer("");
         callHandler.listen();
+        if(eventListener != null){
+            eventListener.onCallRefused();
+        }
     }
     
     @Override
@@ -154,7 +160,9 @@ public class SipUA extends CallListenerAdapter{
             uiRef.appendLog("<<< "+resp.toString()+"\n");
             //start ring
         }
-        
+        if(eventListener != null){
+            eventListener.onCallRinging();
+        }
     }
     
     @Override
