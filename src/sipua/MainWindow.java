@@ -166,27 +166,35 @@ public class MainWindow extends JFrame {
                 if(e.getSource() == MainWindow.this.okButton){
                     String[] sipAddrs = inputField.getText().split("\\s+");
                     if(sipAddrs.length==2){
-                        sipUA.call(sipAddrs[0],Integer.parseInt(sipAddrs[1]));
+                        call(sipAddrs[0],Integer.parseInt(sipAddrs[1]));
                     }else{
                         appendMsg("Input format error");
                     }
                 }else if(e.getSource() == MainWindow.this.cancelButton){
-                    sipUA.closeCall();
+                    closeCall();
                 }
             }
+    }
+    
+    public void call(String ip,int port){
+        sipUA.call(ip,port);
+    }
+    
+    public void closeCall(){
+        sipUA.closeCall();
     }
     
     public void remoteLogin(String ip){
         //remoteIp = ip;
         System.out.println(ip);
-        //if(webMiddleMan == null){
-            webMiddleMan = new WebMiddleMan();
-        //}else{
-        //    webMiddleMan.closeServer();
-       // }
+        if(webMiddleMan == null){
+            webMiddleMan = new WebMiddleMan(this);
+        }else{
+            webMiddleMan.closeServer();
+         }
             
         //temp
-        webMiddleMan.start("127.0.0.1");
+        webMiddleMan.start(ip);
     }
     
 

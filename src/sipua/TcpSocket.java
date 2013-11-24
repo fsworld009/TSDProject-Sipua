@@ -139,13 +139,13 @@ public class TcpSocket {
                     System.out.println("TcpSocket:Listen");
                     socket = serverSocket.accept();
                     System.out.println(socket.getInetAddress().getHostAddress());
-                        if(socket.getInetAddress().getHostAddress().equals(allowIp)){
+                        //if(socket.getInetAddress().getHostAddress().equals(allowIp)){
                             System.out.println("TcpSocket:Accept");
                             eventListener.onAccept();
                             startSocketThread();
-                        }else{
-                            socket.close();
-                        }
+                        //}else{
+                            //socket.close();
+                        //}
 
                     
                 }
