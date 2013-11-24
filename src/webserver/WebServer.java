@@ -51,28 +51,34 @@ import java.io.OutputStream;
             createContent();
             httpServer.start();
         }
+        
+        private static void WriteHTML(String filepath, HttpExchange t) throws IOException{
+            OutputStream os = t.getResponseBody();
+            //InputStream is = new InputStream(new FileReader("index.html"));
+            File webpage = new File(filepath);
+            FileReader webpageReader = new FileReader(webpage);
+            BufferedReader br = new BufferedReader(webpageReader);
+
+            t.sendResponseHeaders(200, webpage.length());
+
+            String line;
+
+            while((line = br.readLine()) != null)
+            {
+                os.write(line.getBytes());
+                os.write("\r\n".getBytes());
+            }
+
+            //os.write(os.getBytes());
+            os.close();
+            br.close();
+            webpageReader.close();
+        }
 
         private static class Login implements HttpHandler {
             public void handle(HttpExchange t) throws IOException {
-              //String response = "Test HttpServer";
-                
-                
-                OutputStream os = t.getResponseBody();
-                //InputStream is = new InputStream(new FileReader("index.html"));
-                File webpage = new File("login.html");
-                BufferedReader br = new BufferedReader(new FileReader(webpage));
-                
-                t.sendResponseHeaders(200, webpage.length());
-                
-                String line;
-                while((line = br.readLine()) != null)
-                {
-                    os.write(line.getBytes());
-                }
-              
-                //os.write(os.getBytes());
-                os.close();
-                br.close();
+              WebServer.WriteHTML("login.html", t);
+
                 
             }
         }
@@ -94,24 +100,9 @@ import java.io.OutputStream;
                 }
                 if(password.equals("1234")){
                     System.out.println("login succeed");
+                    WebServer.WriteHTML("index.html", t);
                 }else{
-                    OutputStream os = t.getResponseBody();
-                    //InputStream is = new InputStream(new FileReader("index.html"));
-                    File webpage = new File("login_failed.html");
-                    BufferedReader br = new BufferedReader(new FileReader(webpage));
-
-                    t.sendResponseHeaders(200, webpage.length());
-                    
-
-                    String line;
-                    while((line = br.readLine()) != null)
-                    {
-                        os.write(line.getBytes());
-                    }
-
-                    //os.write(os.getBytes());
-                    os.close();
-                    br.close();
+                    WebServer.WriteHTML("login_failed.html", t);
                 }
                 
             }
