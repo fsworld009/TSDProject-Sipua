@@ -120,7 +120,7 @@ public class TcpSocket {
     
     public void send(String message){
         synchronized(this.message){
-            this.message.add(message);;
+            this.message.add(message+"\r\n");;
         }
     }
     
@@ -147,15 +147,17 @@ public class TcpSocket {
             try {
                 while(threadRunning){
                     synchronized(message){
-                        if(!message.isEmpty()){
+                        while(!message.isEmpty()){
                             String sendMsg = message.poll();
                             writer.write(sendMsg);
                             System.out.println("TcpSocket:Send "+sendMsg);
-                            writer.flush();
+                            
                         }
+                        writer.flush();
                     }
+                    Thread.sleep(5);
                 }
-                Thread.sleep(5);
+                
             } catch (InterruptedException ex) {
                 Logger.getLogger(TcpSocket.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IOException ex) {
@@ -168,13 +170,15 @@ public class TcpSocket {
         public void run(){        
             try {
                 while(threadRunning){
+                    System.out.println("TcpSocket:Recv");
                     String line = reader.readLine();
                     System.out.println("TcpSocket:Get "+line);
                     if(line != null){
                         eventListener.onReceive(line);
                     }
+                    Thread.sleep(5);
                 }
-                Thread.sleep(5);
+                
             } catch (InterruptedException ex) {
                 Logger.getLogger(TcpSocket.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IOException ex) {
