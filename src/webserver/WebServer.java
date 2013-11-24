@@ -31,7 +31,7 @@ import sipua.MainWindow;
       //ServerSocket serverSocket;  
         private HttpServer httpServer;
         private int httpPort = 9527;
-        private VoiceWarper voiceWarper;
+        //private VoiceWarper voiceWarper;
         private MainWindow uiRef;
         private String password="1234";
         
@@ -74,9 +74,9 @@ import sipua.MainWindow;
             httpServer.start();
             
             //temp
-            voiceWarper = new VoiceWarper();
-            voiceWarper.init("192.168.2.2", 10002);
-            voiceWarper.start();
+            //voiceWarper = new VoiceWarper();
+            //voiceWarper.init("192.168.2.2", 10002);
+            //voiceWarper.start();
             
         }
         
