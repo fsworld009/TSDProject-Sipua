@@ -125,7 +125,7 @@ public class SipUA extends CallListenerAdapter{
     }
     
     public void acceptCall(Call call,NameAddress callee, NameAddress caller, java.lang.String sdp, Message invite){
-        callStatus();
+        //callStatus();
         if(callHandler.isIncoming()){
             uiRef.appendMsg(String.format("Accept the call from "+invite.getRemoteAddress()+"\n"));
             callHandler.accept(sdp);
@@ -133,7 +133,7 @@ public class SipUA extends CallListenerAdapter{
     }
     
     public void refuseCall(Call call,NameAddress callee, NameAddress caller, java.lang.String sdp, Message invite){
-        callStatus();
+        //callStatus();
         if(callHandler.isIncoming()){
             uiRef.appendMsg(String.format("refuse the call from "+invite.getRemoteAddress()+"\n"));
             callHandler.refuse();

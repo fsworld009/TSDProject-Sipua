@@ -52,6 +52,7 @@ public class MainWindow extends JFrame {
         sipUA.start();
         webServer=new WebServer();
         webServer.start();
+        
     }
     
     public void called(final Call call,final NameAddress callee,final NameAddress caller,final java.lang.String sdp, final Message invite){

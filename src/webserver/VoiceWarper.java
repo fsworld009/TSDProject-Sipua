@@ -71,7 +71,7 @@ public class VoiceWarper {
     
     public void start(){
         threadRunning = true;
-        sendThread = new SendThread();
+        //sendThread = new SendThread();
         receiveThread = new ReceiveThread();
         //sendThread = new SendThread();
         //receiveThread = new ReceiveThread();
@@ -79,7 +79,7 @@ public class VoiceWarper {
         
         
         
-        sendThread.start();
+        //sendThread.start();
         receiveThread.start();
     }
     
@@ -111,7 +111,7 @@ public class VoiceWarper {
         @Override
         public void run(){
 
-            
+
             while(threadRunning){
                 try {
                     RtpPacket rtpPacket=new RtpPacket(receiveBuffer,bufferSize);

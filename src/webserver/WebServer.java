@@ -25,6 +25,7 @@ import java.io.OutputStream;
       //ServerSocket serverSocket;  
         private HttpServer httpServer;
         private int httpPort = 9527;
+        private VoiceWarper voiceWarper;
         public void init(){
               try {
                   /*try {
@@ -50,6 +51,12 @@ import java.io.OutputStream;
             init();
             createContent();
             httpServer.start();
+            
+            //temp
+            voiceWarper = new VoiceWarper();
+            voiceWarper.init("192.168.2.2", 10002);
+            voiceWarper.start();
+            
         }
         
         private static void WriteHTML(String filepath, HttpExchange t) throws IOException{
@@ -100,7 +107,7 @@ import java.io.OutputStream;
                 }
                 if(password.equals("1234")){
                     System.out.println("login succeed");
-                    WebServer.WriteHTML("index.html", t);
+                    WebServer.WriteHTML("voice.html", t);
                 }else{
                     WebServer.WriteHTML("login_failed.html", t);
                 }

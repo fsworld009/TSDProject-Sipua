@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<title>RTCtest</title>
+		<script type="text/javascript">
+
+		//Callback when requesting audio input stream
+        var rawData;
+		function gotStream(stream) {
+            rawData = stream;
+            console.log(stream);
+			//window.AudioContext = window.AudioContext || window.webkitAudioContext;
+			//var audioContext = new AudioContext();
+
+			//Create an AudioNode from the stream.
+			//var mediaStreamSource = audioContext.createMediaStreamSource( stream );
+
+			//Connect it to the destination to hear yourself or other node for processing
+			//mediaStreamSource.connect( audioContext.destination );
+		}
+        var micConstraints = {audio:true};
+		navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia;
+		navigator.getUserMedia( micConstraints, gotStream );
+
+		</script>
+	</head>
+	<body>
+		<div style="float:left"> 
+		<p>Repeating...</p>
+		</div>
+	</body>
+</html>
