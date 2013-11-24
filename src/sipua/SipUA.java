@@ -64,6 +64,11 @@ public class SipUA extends CallListenerAdapter{
         uiRef = sipui;
     }
     
+    //debug
+    private void callStatus(){
+        System.out.printf("Outgoing=%s Incoming=%s Active=%s Closed=%s Idle=%s\n",callHandler.isOutgoing(), callHandler.isIncoming(), callHandler.isActive(),callHandler.isClosed(),callHandler.isIdle());
+    }
+    
     @Override
     public void onCallAccepted(Call call, java.lang.String sdp, Message resp){
         //super.onCallAccepted(call, sdp, resp);
@@ -115,6 +120,7 @@ public class SipUA extends CallListenerAdapter{
             }else{
                 uiRef.appendMsg(String.format("refuse the call from "+invite.getRemoteAddress()+"\n"));
                 call.refuse();
+                call.listen();
             }
         }
         //stopring
@@ -278,6 +284,7 @@ public class SipUA extends CallListenerAdapter{
         }else if(callHandler.isOutgoing()){
             uiRef.appendMsg(String.format("Call canceled\n"));
             callHandler.hangup();
+            callHandler.listen();
         }
         //System.out.printf(" after hang up: %s %s %s\n",callHandler.isActive(),callHandler.isClosed(),callHandler.isIdle());
         
