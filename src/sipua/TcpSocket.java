@@ -1,13 +1,15 @@
 /*
  * tcp serversocket & socket
  */
-package webserver;
+package sipua;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.LinkedList;
@@ -20,7 +22,7 @@ public class TcpSocket {
     private ServerSocket serverSocket=null;
     private Socket socket=null;
     private String accept_ip;
-    private int tcpPort=10002;
+
     private boolean threadRunning = false;
     private ServerSocketThread ssThread;
     private SocketSendThread sendThread;
@@ -37,7 +39,7 @@ public class TcpSocket {
         message = new LinkedList<String>();
     }
     
-    public void startServer(String acceptIP){
+    public void startServer(int tcpPort){
         //threadRunning=true;
         if(serverSocket==null){
             try {
@@ -51,7 +53,53 @@ public class TcpSocket {
         ssThread.start();
     }
     
-    public void closeServer(String acceptIP){
+    public void connect(String server,int port){
+            socket = new Socket();
+            try {
+                socket.connect(new InetSocketAddress(server, port),10000);
+            } catch (IOException ex) {
+                Logger.getLogger(TcpSocket.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            if(socket.isConnected()){
+                startSocketThread();
+            }
+    }
+    
+    private void startSocketThread(){
+        
+        try {
+            writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
+            reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
+        } catch (UnsupportedEncodingException ex) {
+            Logger.getLogger(TcpSocket.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(TcpSocket.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        sendThread = new SocketSendThread();
+        receiveThread = new SocketReceiveThread();
+        threadRunning=true;
+        sendThread.start();
+        receiveThread.start();
+    }
+    
+    public void closeSocket(){
+        threadRunning=false;
+        try{
+            if(socket != null ){
+                socket.close();
+            }
+            if(writer != null){
+                writer.close();
+            }
+            if(reader != null){
+                reader.close();
+            }
+        }catch (IOException ex) {
+                Logger.getLogger(TcpSocket.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void closeServer(){
         threadRunning=false;
         try {
             serverSocket.close();
@@ -84,14 +132,13 @@ public class TcpSocket {
         public void run(){
             try {
                 socket = serverSocket.accept();
-                writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
-                reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
-                Thread.sleep(5);
+                System.out.println("TcpSocket:Accept");
+                eventListener.onAccept();
+                startSocketThread();
+                
             } catch (IOException ex) {
                 Logger.getLogger(TcpSocket.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(TcpSocket.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            } 
         }
     }
     
@@ -103,6 +150,7 @@ public class TcpSocket {
                         if(!message.isEmpty()){
                             String sendMsg = message.poll();
                             writer.write(sendMsg);
+                            System.out.println("TcpSocket:Send "+sendMsg);
                             writer.flush();
                         }
                     }
@@ -121,6 +169,7 @@ public class TcpSocket {
             try {
                 while(threadRunning){
                     String line = reader.readLine();
+                    System.out.println("TcpSocket:Get "+line);
                     if(line != null){
                         eventListener.onReceive(line);
                     }

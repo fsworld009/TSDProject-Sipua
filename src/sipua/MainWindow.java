@@ -38,6 +38,7 @@ public class MainWindow extends JFrame {
     private SipUA sipUA;
     private int state;  //0=caller, 1=callee
     private WebServer webServer;
+    private WebMiddleMan webMiddleMan;
     
     public MainWindow(){
         super("Simple Sip UA");
@@ -52,7 +53,8 @@ public class MainWindow extends JFrame {
         sipUA.start();
         webServer=new WebServer(this);
         webServer.start();
-        
+        webMiddleMan = new WebMiddleMan();
+        webMiddleMan.start();
     }
     
     public void called(final Call call,final NameAddress callee,final NameAddress caller,final java.lang.String sdp, final Message invite){

@@ -1,13 +1,29 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package sipua;
 
-/**
- *
- * @author WorldFS
- */
-public class WebMiddleMan {
+
+public class WebMiddleMan implements TcpSocketEventListener {
+    private TcpSocket socket;
+    private int tcpPort=10002;
+    public void start(){
+        socket = new TcpSocket();
+        socket.registerEventListener(this);
+        socket.startServer(tcpPort);
+    }
+
+    @Override
+    public void onAccept() {
+
+    }
+
+    @Override
+    public void onConnect() {
+        
+    }
+
+    @Override
+    public void onReceive(String msg) {
+        
+    }
     
 }

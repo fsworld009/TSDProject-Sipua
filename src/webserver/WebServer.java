@@ -17,6 +17,7 @@ import java.io.FileInputStream;
     import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.InetAddress;
     import java.net.InetSocketAddress;
 import java.util.Scanner;
     import java.util.logging.Level;
@@ -60,6 +61,7 @@ import sipua.MainWindow;
             httpServer.createContext("/recorderWorker.js", new RecorderWorkerJS());
             httpServer.createContext("/WebSip.class", new WebSip());
             httpServer.createContext("/WebSip.jar", new WebSipJar());
+            httpServer.createContext("/ipinfo", new IpInfo());
             //httpServer.createContext("/WebSip$1.class", new WebSip1());
             //httpServer.createContext("/WebSip$MicThread.class", new WebSipMicThread());
 
@@ -147,13 +149,22 @@ import sipua.MainWindow;
             fis.close();
         }
         
-        
-
         private static class Login implements HttpHandler {
             public void handle(HttpExchange t) throws IOException {
               WebServer.WriteHTML("login.html", t);
 
                 
+            }
+        }
+
+        private static class IpInfo implements HttpHandler {
+            public void handle(HttpExchange t) throws IOException {
+                InetAddress addr = InetAddress.getLocalHost();
+                String send = addr.getHostAddress();
+                OutputStream os = t.getResponseBody();
+                t.sendResponseHeaders(200, send.length());
+                os.write(send.getBytes());
+                os.close();
             }
         }
         
