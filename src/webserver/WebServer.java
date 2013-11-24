@@ -6,28 +6,31 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.io.FileReader;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class WebServer {
 
   /* WebServer constructor. */
+    
+  ServerSocket serverSocket;  
+  private int httpPort = 9527;
+  public void init(){
+        try {
+            serverSocket = new ServerSocket(httpPort);
+        } catch (IOException ex) {
+            Logger.getLogger(WebServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        System.out.println("Webserver binds to port 9527");
+  }  
+    
   protected void start() {
-    ServerSocket s;
-
-    System.out.println("Webserver starting up on port 9527");
-    System.out.println("(press ctrl-c to exit)");
-    try {
-      // create the main server socket
-      s = new ServerSocket(9527);
-    } catch (Exception e) {
-      System.out.println("Error: " + e);
-      return;
-    }
-
     System.out.println("Waiting for connection");
-    for (;;) {
+    while (true) {
       try {
         // wait for a connection
-        Socket remote = s.accept();
+        Socket remote = serverSocket.accept();
         // remote is now the connected socket
         System.out.println("Connection, sending data.");
         BufferedReader in = new BufferedReader(new InputStreamReader(
