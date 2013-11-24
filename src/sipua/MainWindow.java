@@ -22,6 +22,9 @@ import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
 import javax.swing.text.BadLocationException;
+import org.zoolu.sip.address.NameAddress;
+import org.zoolu.sip.call.Call;
+import org.zoolu.sip.message.Message;
 import webserver.WebServer;
 
 public class MainWindow extends JFrame {
@@ -51,14 +54,19 @@ public class MainWindow extends JFrame {
         webServer.start();
     }
     
-    public boolean called(String addr){
+    public void called(final Call call,final NameAddress callee,final NameAddress caller,final java.lang.String sdp, final Message invite){
         //JDialog dialog = new JDialog(this,"You got a call from"+addr);
         //dialog.set
-        if(JOptionPane.showConfirmDialog(this,"You got a call from"+addr,"New call",JOptionPane.YES_NO_OPTION)== JOptionPane.YES_OPTION){
-            return true;
-        }else{
-            return false;
-        }
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                if(JOptionPane.showConfirmDialog(null,"You got a call from"+invite.getRemoteAddress(),"New call",JOptionPane.YES_NO_OPTION)== JOptionPane.YES_OPTION){
+                    sipUA.acceptCall(call,callee,caller,sdp,invite);
+                }else{
+                    sipUA.refuseCall(call,callee,caller,sdp,invite);
+                }
+            }
+        });
+
         
     }
     

@@ -113,21 +113,32 @@ public class SipUA extends CallListenerAdapter{
             call.ring();
             //start ring
             
-            if(uiRef.called(invite.getRemoteAddress())){
-                uiRef.appendMsg(String.format("Accept the call from "+invite.getRemoteAddress()+"\n"));
-                call.accept(sdp);
+            uiRef.called(call,callee,caller,sdp,invite);
+            
 
-            }else{
-                uiRef.appendMsg(String.format("refuse the call from "+invite.getRemoteAddress()+"\n"));
-                call.refuse();
-                call.listen();
-            }
         }
         //stopring
         
         
         
         
+    }
+    
+    public void acceptCall(Call call,NameAddress callee, NameAddress caller, java.lang.String sdp, Message invite){
+        callStatus();
+        if(callHandler.isIncoming()){
+            uiRef.appendMsg(String.format("Accept the call from "+invite.getRemoteAddress()+"\n"));
+            callHandler.accept(sdp);
+        }
+    }
+    
+    public void refuseCall(Call call,NameAddress callee, NameAddress caller, java.lang.String sdp, Message invite){
+        callStatus();
+        if(callHandler.isIncoming()){
+            uiRef.appendMsg(String.format("refuse the call from "+invite.getRemoteAddress()+"\n"));
+            callHandler.refuse();
+            callHandler.listen();
+        }
     }
     
     @Override
