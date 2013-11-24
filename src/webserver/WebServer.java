@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
     import java.net.InetSocketAddress;
+import java.util.Scanner;
     import java.util.logging.Level;
     import java.util.logging.Logger;
 
@@ -44,6 +45,8 @@ import java.io.OutputStream;
         private void createContent(){
             httpServer.createContext("/login.html", new Login());
             httpServer.createContext("/login_check.html", new Login_check());
+            httpServer.createContext("/recorder.js", new RecorderJS());
+            httpServer.createContext("/recorderWorker.js", new RecorderWorkerJS());
 
         }
         
@@ -63,24 +66,53 @@ import java.io.OutputStream;
             OutputStream os = t.getResponseBody();
             //InputStream is = new InputStream(new FileReader("index.html"));
             File webpage = new File(filepath);
-            FileReader webpageReader = new FileReader(webpage);
-            BufferedReader br = new BufferedReader(webpageReader);
+            //FileReader webpageReader = new FileReader(webpage);
+            //BufferedReader br = new BufferedReader(webpageReader);
+            Scanner sc = new Scanner(webpage);
 
             t.sendResponseHeaders(200, webpage.length());
 
             String line;
 
-            while((line = br.readLine()) != null)
+            while(sc.hasNext())
             {
+                line = sc.nextLine();
                 os.write(line.getBytes());
                 os.write("\r\n".getBytes());
             }
 
             //os.write(os.getBytes());
             os.close();
-            br.close();
-            webpageReader.close();
+            sc.close();
+            //webpageReader.close();
         }
+        
+        private static void WriteJS(String filepath, HttpExchange t) throws IOException{
+            OutputStream os = t.getResponseBody();
+            //InputStream is = new InputStream(new FileReader("index.html"));
+            File webpage = new File(filepath);
+            //FileReader webpageReader = new FileReader(webpage);
+            //BufferedReader br = new BufferedReader(webpageReader);
+            Scanner sc = new Scanner(webpage);
+
+            t.sendResponseHeaders(200, webpage.length());
+
+            String line;
+
+            while(sc.hasNext())
+            {
+                line = sc.nextLine();
+                os.write(line.getBytes());
+                os.write("\n".getBytes());
+            }
+
+            //os.write(os.getBytes());
+            os.close();
+            sc.close();
+            //webpageReader.close();
+        }
+        
+        
 
         private static class Login implements HttpHandler {
             public void handle(HttpExchange t) throws IOException {
@@ -112,6 +144,20 @@ import java.io.OutputStream;
                     WebServer.WriteHTML("login_failed.html", t);
                 }
                 
+            }
+        }
+        
+        private static class RecorderJS implements HttpHandler {
+            public void handle(HttpExchange t) throws IOException {
+              //String response = "Test HttpServer";
+                WebServer.WriteJS("recorder.js", t);
+            }
+        }
+        
+        private static class RecorderWorkerJS implements HttpHandler {
+            public void handle(HttpExchange t) throws IOException {
+              //String response = "Test HttpServer";
+                WebServer.WriteJS("recorderWorker.js", t);
             }
         }
 

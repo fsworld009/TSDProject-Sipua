@@ -3,13 +3,18 @@
 	<head>
 		<meta charset="UTF-8" />
 		<title>RTCtest</title>
+        <script type="text/javascript" src="recorder.js"> </script>
 		<script type="text/javascript">
-
+        
 		//Callback when requesting audio input stream
         var rawData;
+        //var 
+        var recorder;
 		function gotStream(stream) {
-            rawData = stream;
-            console.log(stream);
+            var context = new webkitAudioContext();
+            var mediaStreamSource = context.createMediaStreamSource(stream);
+            recorder = new Recorder(mediaStreamSource);
+            recorder.record();
 			//window.AudioContext = window.AudioContext || window.webkitAudioContext;
 			//var audioContext = new AudioContext();
 
@@ -22,12 +27,16 @@
         var micConstraints = {audio:true};
 		navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia;
 		navigator.getUserMedia( micConstraints, gotStream );
+        
+        function test(buffer){
+            console.log("test"+buffer);
+        }
 
 		</script>
 	</head>
 	<body>
 		<div style="float:left"> 
-		<p>Repeating...</p>
+		<p><a href="#" onClick="recorder.getBuffer(test)">TEST</a></p>
 		</div>
 	</body>
 </html>
