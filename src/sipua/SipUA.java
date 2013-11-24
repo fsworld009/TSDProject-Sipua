@@ -95,7 +95,7 @@ public class SipUA extends CallListenerAdapter{
     public void onCallRefused(Call call, java.lang.String reason, Message resp){
         uiRef.appendLog("<<< "+resp.toString()+"\n");
         uiRef.appendMsg(String.format("Call refused by "+resp.getRemoteAddress()+"\n"));
-        callHandler.hangup();
+        callHandler.ackWithAnswer("");
         callHandler.listen();
     }
     
@@ -152,7 +152,7 @@ public class SipUA extends CallListenerAdapter{
     public void onCallCancel(Call call, Message cancel){
         uiRef.appendLog("<<< "+cancel.toString()+"\n");
         uiRef.appendMsg(String.format("Call canceled by"+cancel.getRemoteAddress()+"...\n"));
-        callHandler.ackWithAnswer(myIpAddress);
+        callHandler.ackWithAnswer("");
         //callHandler.hangup();
         callHandler.listen();
     }
