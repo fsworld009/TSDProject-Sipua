@@ -21,7 +21,7 @@ import java.util.logging.Logger;
 public class TcpSocket {
     private ServerSocket serverSocket=null;
     private Socket socket=null;
-    private String accept_ip;
+    //private String accept_ip;
 
     private boolean threadRunning = false;
     private ServerSocketThread ssThread;
@@ -139,13 +139,13 @@ public class TcpSocket {
                     System.out.println("TcpSocket:Listen");
                     socket = serverSocket.accept();
                     System.out.println(socket.getInetAddress().getHostAddress());
-                        //if(socket.getInetAddress().getHostAddress().equals(allowIp)){
+                        if(socket.getInetAddress().getHostAddress().equals(allowIp)){
                             System.out.println("TcpSocket:Accept");
                             eventListener.onAccept();
                             startSocketThread();
-                        //}else{
-                            //socket.close();
-                        //}
+                        }else{
+                            socket.close();
+                        }
 
                     
                 }

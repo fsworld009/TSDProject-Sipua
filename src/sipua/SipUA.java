@@ -67,6 +67,11 @@ public class SipUA extends CallListenerAdapter{
         eventListener = ls;
     }
     
+    public void removeEventListener(){
+        //end remote control
+        eventListener = null;
+    }
+    
  
     
     public SipUA(MainWindow sipui/*CallListenerAdapter eventListener*/){

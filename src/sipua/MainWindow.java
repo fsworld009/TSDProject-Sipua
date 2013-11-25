@@ -40,6 +40,8 @@ public class MainWindow extends JFrame {
     private WebServer webServer;
     private WebMiddleMan webMiddleMan;
     private String remoteIp;
+    private int remoteRtpPort = 10003;
+    private boolean remoteControl=false;
     
     public MainWindow(){
         super("Simple Sip UA");
@@ -163,15 +165,19 @@ public class MainWindow extends JFrame {
     private class GUIActionListener implements ActionListener{
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(e.getSource() == MainWindow.this.okButton){
-                    String[] sipAddrs = inputField.getText().split("\\s+");
-                    if(sipAddrs.length==2){
-                        call(sipAddrs[0],Integer.parseInt(sipAddrs[1]));
-                    }else{
-                        appendMsg("Input format error");
+                if(!remoteControl){
+                    if(e.getSource() == MainWindow.this.okButton){
+                        String[] sipAddrs = inputField.getText().split("\\s+");
+                        if(sipAddrs.length==2){
+                            call(sipAddrs[0],Integer.parseInt(sipAddrs[1]));
+                        }else{
+                            appendMsg("Input format error\n");
+                        }
+                    }else if(e.getSource() == MainWindow.this.cancelButton){
+                        closeCall();
                     }
-                }else if(e.getSource() == MainWindow.this.cancelButton){
-                    closeCall();
+                }else{
+                    appendMsg("You are being remote controlled by "+remoteIp+"\n");
                 }
             }
     }
@@ -184,19 +190,35 @@ public class MainWindow extends JFrame {
         sipUA.closeCall();
     }
     
-    public void remoteLogin(String ip){
-        //remoteIp = ip;
+    public void setRemoteIp(String ip){
+        remoteIp = ip;
         System.out.println(ip);
+        
         if(webMiddleMan == null){
             webMiddleMan = new WebMiddleMan(this,sipUA);
         }else{
             webMiddleMan.closeServer();
          }
+        
+        sipUA.remoteRTPAddress(remoteIp,remoteRtpPort);   //need improve
+        webMiddleMan.start(remoteIp);
+    }
+    
+    public void remoteLogin(){
+        appendMsg("Remote control from "+remoteIp+"\n");
+
             
         //temp
         sipUA.addEventListener(webMiddleMan);
-        sipUA.remoteRTPAddress("192.168.2.2",10003);   //need improve
-        webMiddleMan.start(ip);
+        remoteControl = true;
+
+    }
+    
+    public void remoteLogout(){
+        sipUA.removeEventListener();
+        remoteControl = false;
+        webMiddleMan.closeAcceptSocket();
+        appendMsg("Remote user logoutted\n");
     }
     
 

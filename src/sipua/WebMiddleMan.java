@@ -19,10 +19,14 @@ public class WebMiddleMan implements TcpSocketEventListener, SipUAEventListener 
         socket.registerEventListener(this);
         socket.startServer(ip,tcpPort);
     }
+    
+    public void closeAcceptSocket(){
+        socket.closeSocket();
+    }
 
     @Override
     public void onAccept() {
-
+        uiRef.remoteLogin();
     }
 
     @Override
@@ -37,8 +41,8 @@ public class WebMiddleMan implements TcpSocketEventListener, SipUAEventListener 
             uiRef.call(addr[1],Integer.parseInt(addr[2]));
         }else if (msg.equals("CANCEL")){
             uiRef.closeCall();
-        }else if(msg.equals("ACCEPT")){
-            //uiRef;
+        }else if(msg.equals("LOGOUT")){
+            uiRef.remoteLogout();
         }
     }
     
