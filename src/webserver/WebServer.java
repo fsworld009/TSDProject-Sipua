@@ -88,14 +88,30 @@ import sipua.MainWindow;
             //BufferedReader br = new BufferedReader(webpageReader);
             Scanner sc = new Scanner(webpage);
 
-            t.sendResponseHeaders(200, webpage.length());
+            
 
             String line;
-
+            
+            String param="";
+            
+            
+            if(filepath.equals("Webphone.html")){
+                param="<param name=\"remoteIp\" value=\""+InetAddress.getLocalHost().getHostAddress()+"\"/>";
+            }
+            
+            t.sendResponseHeaders(200, webpage.length()+param.length());
+            int count=0;
             while(sc.hasNext())
             {
                 line = sc.nextLine();
+                count++;
+
                 os.write(line.getBytes());
+                //System.out.println(line);
+                if(count==11){  //for Webphone.html
+                    os.write(param.getBytes());
+                    //System.out.println(param);
+                }
                 os.write("\r\n".getBytes());
             }
 
