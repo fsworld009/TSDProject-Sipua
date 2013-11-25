@@ -1,6 +1,8 @@
 global config
-protocol btw browser and webserver (before call)
-Simple echo sound server
-connect btw Webserver and SipUA
-SipUA: cancel call, call accept/deny
-Webserver: redirect to remote page after login, save/read cookie/session?
+sipUA display both web&sip msgs
+volume control
+*protocol btw browser and webserver (before call)
+*Simple echo sound server
+*connect btw Webserver and SipUA
+*SipUA: cancel call, call accept/deny
+*Webserver: redirect to remote page after login, save/read cookie/session?
