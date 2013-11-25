@@ -39,7 +39,7 @@ public class WebMiddleMan implements TcpSocketEventListener, SipUAEventListener 
         if(msg.contains("CALL")){
             String[] addr = msg.split("\\s+");
             uiRef.call(addr[1],Integer.parseInt(addr[2]));
-        }else if (msg.equals("CANCEL")){
+        }else if (msg.equals("CANCEL")||msg.equals("CLOSE")){
             uiRef.closeCall();
         }else if(msg.equals("LOGOUT")){
             uiRef.remoteLogout();
