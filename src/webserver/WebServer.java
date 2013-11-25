@@ -184,7 +184,7 @@ import sipua.MainWindow;
                     //System.out.println(spl2[1]);
                     password = spl2[1];
                 }
-                if(password.equals(password)){
+                if(password.equals(WebServer.this.password)){
                     System.out.println("login succeed");
                     uiRef.setRemoteIp(t.getRemoteAddress().getHostName());
                     WebServer.WriteHTML("index.html", t);  //temp
