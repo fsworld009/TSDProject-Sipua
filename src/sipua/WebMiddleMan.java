@@ -32,7 +32,7 @@ public class WebMiddleMan implements TcpSocketEventListener, SipUAEventListener 
 
     @Override
     public void onReceive(String msg) {
-        if(msg.indexOf("CALL")==0){
+        if(msg.contains("CALL")){
             String[] addr = msg.split("\\s+");
             uiRef.call(addr[1],Integer.parseInt(addr[2]));
         }else if (msg.equals("CANCEL")){

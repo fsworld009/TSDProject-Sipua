@@ -160,9 +160,9 @@ public class VoiceForwarder {
                     //}
                     Thread.sleep(5);
                 } catch (InterruptedException ex) {
-                    Logger.getLogger(VoiceChat.class.getName()).log(Level.SEVERE, null, ex);
+                    //Logger.getLogger(VoiceChat.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (IOException ex) {
-                    Logger.getLogger(VoiceChat.class.getName()).log(Level.SEVERE, null, ex);
+                    //Logger.getLogger(VoiceChat.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             //recordLine.drain();
@@ -199,9 +199,9 @@ public class VoiceForwarder {
 
                     Thread.sleep(5);
                 } catch (InterruptedException ex) {
-                    Logger.getLogger(VoiceChat.class.getName()).log(Level.SEVERE, null, ex);
+                    //Logger.getLogger(VoiceChat.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (IOException ex) {
-                    Logger.getLogger(VoiceChat.class.getName()).log(Level.SEVERE, null, ex);
+                    //Logger.getLogger(VoiceChat.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             //playLine.drain();
