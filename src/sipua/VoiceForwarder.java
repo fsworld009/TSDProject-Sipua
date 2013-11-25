@@ -44,8 +44,8 @@ public class VoiceForwarder {
     
     boolean threadRunning = false;
     
-    WebToSipThread micThread;
-    SipToWebThread speakerThread;
+    WebToSipThread webToSipThread;
+    SipToWebThread sipToWebThread;
     //SendThread sendThread;
     //ReceiveThread receiveThread;
     
@@ -58,6 +58,7 @@ public class VoiceForwarder {
     
     
     public void init(String webAddress, int webPort, String sipAddress, int sipPort){
+        System.out.printf("%s %d %s %d\n",webAddress,webPort,sipAddress,sipPort);
         this.sipAddress = sipAddress;
         this.webAddress = webAddress;
         this.sipPort = sipPort;
@@ -87,7 +88,7 @@ public class VoiceForwarder {
                 }*/
             
             bufferSize = (int)audioFormat.getSampleRate() * audioFormat.getFrameSize();
-            System.out.printf("fsdfs %d %f %d", bufferSize,audioFormat.getSampleRate(),audioFormat.getFrameSize());
+            System.out.printf("%d %f %d", bufferSize,audioFormat.getSampleRate(),audioFormat.getFrameSize());
             //bufferSize = 4000;
             webToSipBuffer = new byte[bufferSize];
             sipToWebBuffer = new byte[bufferSize];
@@ -111,16 +112,16 @@ public class VoiceForwarder {
     
     public void start(){
         threadRunning = true;
-        micThread = new WebToSipThread();
-        speakerThread = new SipToWebThread();
+        webToSipThread = new WebToSipThread();
+        sipToWebThread = new SipToWebThread();
         //sendThread = new SendThread();
         //receiveThread = new ReceiveThread();
         
         
         
         
-        micThread.start();
-        speakerThread.start();
+        webToSipThread.start();
+        sipToWebThread.start();
         //sendThread.start();
         //receiveThread.start();
     }

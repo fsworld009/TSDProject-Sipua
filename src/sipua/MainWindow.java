@@ -195,7 +195,7 @@ public class MainWindow extends JFrame {
             
         //temp
         sipUA.addEventListener(webMiddleMan);
-        sipUA.remoteRTPAddress("localhost",10003);   //need improve
+        sipUA.remoteRTPAddress("192.168.2.2",10003);   //need improve
         webMiddleMan.start(ip);
     }
     
