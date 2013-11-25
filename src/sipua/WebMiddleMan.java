@@ -61,16 +61,19 @@ public class WebMiddleMan implements TcpSocketEventListener, SipUAEventListener 
     @Override
     public void onCallCancel() {
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        socket.send("CANCELED");
     }
 
     @Override
     public void onCallConfirmed() {
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        socket.send("CONFIRMED");
     }
 
     @Override
-    public void onCallInvite() {
+    public void onCallInvite(String remoteAddr) {
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        socket.send("INVITE FROM "+remoteAddr);
     }
 
     @Override

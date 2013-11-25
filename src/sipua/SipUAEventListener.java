@@ -10,7 +10,7 @@ public interface SipUAEventListener {
     public void onCallBye();
     public void onCallCancel();
     public void onCallConfirmed();
-    public void onCallInvite();
+    public void onCallInvite(String remoteAddr);
     public void onCallRefused();
     public void onCallRinging();
 }

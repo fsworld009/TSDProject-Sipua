@@ -135,7 +135,9 @@ public class SipUA extends CallListenerAdapter{
         }
         //stopring
         
-        
+        if(eventListener != null){
+            eventListener.onCallInvite(invite.getRemoteAddress());
+        }
         
         
     }
@@ -181,6 +183,10 @@ public class SipUA extends CallListenerAdapter{
             initVoiceChat();
             uiRef.appendMsg(String.format("Chat with "+ack.getRemoteAddress()+"...\n"));
         }
+        
+        if(eventListener != null){
+            eventListener.onCallConfirmed();
+        }
     }
     
     @Override
@@ -190,6 +196,10 @@ public class SipUA extends CallListenerAdapter{
         callHandler.ackWithAnswer("");
         //callHandler.hangup();
         callHandler.listen();
+        
+        if(eventListener != null){
+            eventListener.onCallCancel();
+        }
     }
     
     @Override
@@ -198,6 +208,10 @@ public class SipUA extends CallListenerAdapter{
         uiRef.appendMsg(String.format("Call ended by "+bye.getRemoteAddress()+"\n"));
         //callHandler.accept("");
         this.closeVoiceChat();
+        
+        if(eventListener != null){
+            eventListener.onCallBye();
+        }
     }
     
     private void initVoiceChat(){
@@ -330,7 +344,7 @@ public class SipUA extends CallListenerAdapter{
         //System.out.printf(" before hang up: %s %s %s\n",callHandler.isActive(),callHandler.isClosed(),callHandler.isIdle());
         if(callHandler.isActive()){
             callHandler.hangup();
-            uiRef.appendMsg(String.format("Call ended by me\n"));
+            uiRef.appendMsg(String.format("Call ended\n"));
             this.closeVoiceChat();
         }else if(callHandler.isOutgoing()){
             uiRef.appendMsg(String.format("Call canceled\n"));
