@@ -130,21 +130,22 @@ public class SipUA extends CallListenerAdapter{
         //super.onCallInvite(call, callee, caller, sdp, invite);
         //System.err.println("Invite: "+invite);
         uiRef.appendLog("<<< "+invite.toString()+"\n");
-        if(callHandler.isIncoming()){
+        sdpRef=sdp;
+        inviteRef=invite;
+       
+        
+        if(eventListener != null){
+            eventListener.onCallInvite(invite.getRemoteAddress());
+        }else{
+            if(callHandler.isIncoming()){
             call.ring();
             //start ring
             
             uiRef.called(call,callee,caller,sdp,invite);
+            //stopring
             
-
+            }
         }
-        //stopring
-        
-        if(eventListener != null){
-            eventListener.onCallInvite(invite.getRemoteAddress());
-        }
-        
-        
     }
     
     public void acceptCall(Call call,NameAddress callee, NameAddress caller, java.lang.String sdp, Message invite){
@@ -159,6 +160,24 @@ public class SipUA extends CallListenerAdapter{
         //callStatus();
         if(callHandler.isIncoming()){
             uiRef.appendMsg(String.format("refuse the call from "+invite.getRemoteAddress()+"\n"));
+            callHandler.refuse();
+            callHandler.listen();
+        }
+    }
+    
+    //invoked by WebMiddleMan
+    private String sdpRef;
+    private Message inviteRef;
+    public void acceptCall(){
+        if(callHandler.isIncoming()){
+            uiRef.appendMsg(String.format("Accept the call from "+inviteRef.getRemoteAddress()+"\n"));
+            callHandler.accept(sdpRef);
+        }
+    }
+    
+    public void refuseCall(){
+        if(callHandler.isIncoming()){
+            uiRef.appendMsg(String.format("refuse the call from "+inviteRef.getRemoteAddress()+"\n"));
             callHandler.refuse();
             callHandler.listen();
         }
@@ -187,11 +206,12 @@ public class SipUA extends CallListenerAdapter{
             //Callee starts its voice chat here
             initVoiceChat();
             uiRef.appendMsg(String.format("Chat with "+ack.getRemoteAddress()+"...\n"));
+            if(eventListener != null){
+                eventListener.onCallConfirmed();
+            }
         }
         
-        if(eventListener != null){
-            eventListener.onCallConfirmed();
-        }
+
     }
     
     @Override

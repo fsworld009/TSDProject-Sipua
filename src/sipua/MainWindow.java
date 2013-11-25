@@ -62,15 +62,19 @@ public class MainWindow extends JFrame {
     public void called(final Call call,final NameAddress callee,final NameAddress caller,final java.lang.String sdp, final Message invite){
         //JDialog dialog = new JDialog(this,"You got a call from"+addr);
         //dialog.set
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                if(JOptionPane.showConfirmDialog(null,"You got a call from"+invite.getRemoteAddress(),"New call",JOptionPane.YES_NO_OPTION)== JOptionPane.YES_OPTION){
-                    sipUA.acceptCall(call,callee,caller,sdp,invite);
-                }else{
-                    sipUA.refuseCall(call,callee,caller,sdp,invite);
+        
+        
+        //if(!remoteControl){
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    if(JOptionPane.showConfirmDialog(null,"You got a call from"+invite.getRemoteAddress(),"New call",JOptionPane.YES_NO_OPTION)== JOptionPane.YES_OPTION){
+                        sipUA.acceptCall(call,callee,caller,sdp,invite);
+                    }else{
+                        sipUA.refuseCall(call,callee,caller,sdp,invite);
+                    }
                 }
-            }
-        });
+            });
+        //}
 
         
     }

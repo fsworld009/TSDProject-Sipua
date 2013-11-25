@@ -43,6 +43,10 @@ public class WebMiddleMan implements TcpSocketEventListener, SipUAEventListener 
             uiRef.closeCall();
         }else if(msg.equals("LOGOUT")){
             uiRef.remoteLogout();
+        }else if(msg.equals("ACCEPT")){
+            sipRef.acceptCall();
+        }else if(msg.equals("REFUSE")){
+            sipRef.refuseCall();
         }
     }
     
