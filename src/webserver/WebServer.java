@@ -60,8 +60,8 @@ import sipua.MainWindow;
             httpServer.createContext("/login_check.html", new Login_check());
             httpServer.createContext("/recorder.js", new RecorderJS());
             httpServer.createContext("/recorderWorker.js", new RecorderWorkerJS());
-            httpServer.createContext("/WebSip.class", new WebSip());
-            httpServer.createContext("/WebSip.jar", new WebSipJar());
+            httpServer.createContext("/WebUI.class", new WebSip());
+            httpServer.createContext("/Webphone.jar", new WebSipJar());
             httpServer.createContext("/ipinfo", new IpInfo());
             //httpServer.createContext("/WebSip$1.class", new WebSip1());
             //httpServer.createContext("/WebSip$MicThread.class", new WebSipMicThread());
@@ -136,7 +136,7 @@ import sipua.MainWindow;
             h.add("Content-Type", "application/java-archive");
 
             // a PDF (you provide your own!)
-            File file = new File ("WebSip.class");
+            File file = new File (filepath);
             byte [] bytearray  = new byte [(int)file.length()];
             FileInputStream fis = new FileInputStream(file);
             BufferedInputStream bis = new BufferedInputStream(fis);
@@ -187,7 +187,7 @@ import sipua.MainWindow;
                 if(password.equals(WebServer.this.password)){
                     System.out.println("login succeed");
                     uiRef.setRemoteIp(t.getRemoteAddress().getHostName());
-                    WebServer.WriteHTML("index.html", t);  //temp
+                    WebServer.WriteHTML("Webphone.html", t);  //temp
                     //
                     System.out.println("login succeed");
                 }else{
@@ -214,14 +214,14 @@ import sipua.MainWindow;
         private static class WebSip implements HttpHandler {
             public void handle(HttpExchange t) throws IOException {
               //String response = "Test HttpServer";
-                WebServer.WriteRaw("WebSip.class", t);
+                WebServer.WriteRaw("WebUI.class", t);
             }
         }
         
         private static class WebSipJar implements HttpHandler {
             public void handle(HttpExchange t) throws IOException {
               //String response = "Test HttpServer";
-                WebServer.WriteRaw("WebSip.jar", t);
+                WebServer.WriteRaw("Webphone.jar", t);
             }
         }
         
