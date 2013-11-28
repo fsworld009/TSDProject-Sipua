@@ -36,6 +36,7 @@ public class WebMiddleMan implements TcpSocketEventListener, SipUAEventListener 
 
     @Override
     public void onReceive(String msg) {
+        uiRef.appendLog("<<< (Web) "+msg+"\n");
         if(msg.contains("CALL")){
             String[] addr = msg.split("\\s+");
             uiRef.call(addr[1],Integer.parseInt(addr[2]));
@@ -57,43 +58,47 @@ public class WebMiddleMan implements TcpSocketEventListener, SipUAEventListener 
     @Override
     public void onCallAccepted() {
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        socket.send("ACCEPTED");
+        sendRaw("ACCEPTED");
     }
 
     @Override
     public void onCallBye() {
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        socket.send("BYE");
+        sendRaw("BYE");
     }
 
     @Override
     public void onCallCancel() {
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        socket.send("CANCELED");
+        sendRaw("CANCELED");
     }
 
     @Override
     public void onCallConfirmed() {
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        socket.send("CONFIRMED");
+        sendRaw("CONFIRMED");
     }
 
     @Override
     public void onCallInvite(String remoteAddr) {
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        socket.send("INVITE FROM "+remoteAddr);
+        sendRaw("INVITE FROM "+remoteAddr);
     }
 
     @Override
     public void onCallRefused() {
         //throw new UnsuportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        socket.send("REFUSED");
+        sendRaw("REFUSED");
     }
 
     @Override
     public void onCallRinging() {
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        socket.send("RING");
+        sendRaw("RING");
     }
     
+    public void sendRaw(String msg){
+        uiRef.appendLog(">>> (Web) "+msg+"\n");
+        sendRaw(msg);
+    }
 }
