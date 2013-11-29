@@ -144,6 +144,7 @@ public class TcpSocket {
                             eventListener.onAccept();
                             startSocketThread();
                         }else{
+                            System.out.println("TcpSocket:Decline");
                             socket.close();
                         }
 

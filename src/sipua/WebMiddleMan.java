@@ -99,6 +99,6 @@ public class WebMiddleMan implements TcpSocketEventListener, SipUAEventListener 
     
     public void sendRaw(String msg){
         uiRef.appendLog(">>> (Web) "+msg+"\n");
-        sendRaw(msg);
+        socket.send(msg);
     }
 }
