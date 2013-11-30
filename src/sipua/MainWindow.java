@@ -21,6 +21,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 import javax.swing.text.BadLocationException;
 import org.zoolu.sip.address.NameAddress;
 import org.zoolu.sip.call.Call;
@@ -34,6 +35,8 @@ public class MainWindow extends JFrame {
     private JTextField inputField;
     private JButton okButton;
     private JButton cancelButton;
+    private JButton acceptButton;
+    private JButton refuseButton;
     private GUIActionListener listener;
     private SipUA sipUA;
     private int state;  //0=caller, 1=callee
@@ -42,13 +45,14 @@ public class MainWindow extends JFrame {
     private String remoteIp;
     private int remoteRtpPort = 10003;
     private boolean remoteControl=false;
+    private JOptionPane optionPane;
     
     public MainWindow(){
         super("Simple Sip UA");
         //this.mainWinRef = mainWinRef;
         //init();
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(360,480);
+        this.setSize(480,480);
         this.setResizable(false);
         this.addWindowListener(new closeEventWindowListener());
         initComponents();
@@ -59,24 +63,15 @@ public class MainWindow extends JFrame {
         //
     }
     
-    public void called(final Call call,final NameAddress callee,final NameAddress caller,final java.lang.String sdp, final Message invite){
-        //JDialog dialog = new JDialog(this,"You got a call from"+addr);
-        //dialog.set
-        
-        
-        //if(!remoteControl){
-            SwingUtilities.invokeLater(new Runnable() {
-                public void run() {
-                    if(JOptionPane.showConfirmDialog(null,"You got a call from"+invite.getRemoteAddress(),"New call",JOptionPane.YES_NO_OPTION)== JOptionPane.YES_OPTION){
-                        sipUA.acceptCall(call,callee,caller,sdp,invite);
-                    }else{
-                        sipUA.refuseCall(call,callee,caller,sdp,invite);
-                    }
-                }
-            });
-        //}
-
-        
+    public void enableButton(final boolean ok, final boolean cancel, final boolean accept, final boolean refuse){
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                okButton.setEnabled(ok);
+                cancelButton.setEnabled(cancel);
+                acceptButton.setEnabled(accept);
+                refuseButton.setEnabled(refuse);
+            }
+        });
     }
     
     private void initComponents(){
@@ -91,6 +86,11 @@ public class MainWindow extends JFrame {
         JScrollPane logScrollPane = new JScrollPane(logPane);
         okButton = new JButton("Call");
         cancelButton = new JButton("Close");
+        cancelButton.setEnabled(false);
+        acceptButton = new JButton("Accept");
+        acceptButton.setEnabled(false);
+        refuseButton = new JButton("Refuse");
+        refuseButton.setEnabled(false);
         listener = new GUIActionListener();
         
         setLayout(new GridBagLayout());
@@ -111,9 +111,14 @@ public class MainWindow extends JFrame {
         inputPanel.add(inputField);
         inputPanel.add(okButton);
         inputPanel.add(cancelButton);
+        inputPanel.add(acceptButton);
+        inputPanel.add(refuseButton);
+        
         
         okButton.addActionListener(listener);
         cancelButton.addActionListener(listener);
+        acceptButton.addActionListener(listener);
+        refuseButton.addActionListener(listener);
         
         gbc = new GridBagConstraints();
         gbc.gridx = 1;
@@ -179,6 +184,10 @@ public class MainWindow extends JFrame {
                         }
                     }else if(e.getSource() == MainWindow.this.cancelButton){
                         closeCall();
+                    }else if(e.getSource() == MainWindow.this.acceptButton){
+                        sipUA.acceptCall();
+                    }else if(e.getSource() == MainWindow.this.refuseButton){
+                        sipUA.refuseCall();
                     }
                 }else{
                     appendMsg("You are being remote controlled by "+remoteIp+"\n");

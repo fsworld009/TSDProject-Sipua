@@ -122,6 +122,7 @@ public class SipUA extends CallListenerAdapter{
         RingPlayer.ins().stopPlay();
         callHandler.ackWithAnswer("");
         callHandler.listen();
+        uiRef.enableButton(true, false, false, false);
         if(eventListener != null){
             eventListener.onCallRefused();
         }
@@ -132,6 +133,7 @@ public class SipUA extends CallListenerAdapter{
         //super.onCallInvite(call, callee, caller, sdp, invite);
         //System.err.println("Invite: "+invite);
         uiRef.appendLog("<<< (SIP) "+invite.toString()+"\n");
+        uiRef.appendMsg("You got a call from "+invite.getRemoteAddress()+"\n");
         sdpRef=sdp;
         inviteRef=invite;
         if(callHandler.isIncoming()){
@@ -139,14 +141,14 @@ public class SipUA extends CallListenerAdapter{
             if(eventListener != null){
                 eventListener.onCallInvite(invite.getRemoteAddress());
             }else{
-                uiRef.called(call,callee,caller,sdp,invite);
+                uiRef.enableButton(false, false, true, true);
                 //start ring
                 RingPlayer.ins().startPlay();
             }
 
         }
     }
-    
+    /*
     public void acceptCall(Call call,NameAddress callee, NameAddress caller, java.lang.String sdp, Message invite){
         //callStatus();
         if(callHandler.isIncoming()){
@@ -164,14 +166,15 @@ public class SipUA extends CallListenerAdapter{
             callHandler.refuse();
             callHandler.listen();
         }
-    }
+    }*/
     
-    //invoked by WebMiddleMan
+    
     private String sdpRef;
     private Message inviteRef;
     public void acceptCall(){
         if(callHandler.isIncoming()){
             RingPlayer.ins().stopPlay();
+            uiRef.enableButton(false, true, false, false);
             uiRef.appendMsg(String.format("Accept the call from "+inviteRef.getRemoteAddress()+"\n"));
             callHandler.accept(sdpRef);
         }
@@ -180,6 +183,7 @@ public class SipUA extends CallListenerAdapter{
     public void refuseCall(){
         if(callHandler.isIncoming()){
             RingPlayer.ins().stopPlay();
+            uiRef.enableButton(true, false, false, false);
             uiRef.appendMsg(String.format("refuse the call from "+inviteRef.getRemoteAddress()+"\n"));
             callHandler.refuse();
             callHandler.listen();
@@ -229,7 +233,7 @@ public class SipUA extends CallListenerAdapter{
             callHandler.ackWithAnswer("");
             //callHandler.hangup();
             callHandler.listen();
-
+            uiRef.enableButton(true, false, false, false);
             if(eventListener != null){
                 eventListener.onCallCancel();
             }
@@ -251,6 +255,7 @@ public class SipUA extends CallListenerAdapter{
     }
     
     private void initVoiceChat(){
+        uiRef.enableButton(false, true, false, false);
         if(eventListener == null){
             if(voiceChat==null){
                 voiceChat = new VoiceChat();
@@ -276,7 +281,7 @@ public class SipUA extends CallListenerAdapter{
     private void closeVoiceChat(){
 
         
-        
+        uiRef.enableButton(true, false, false, false);
         if(eventListener == null){
             voiceChat.close();
         }else{
@@ -360,7 +365,7 @@ public class SipUA extends CallListenerAdapter{
         recvPort = port;
         recvSipURL = new SipURL(recvAddress,recvPort);
         recvNameAddress = new NameAddress(recvSipURL);
-        
+        uiRef.enableButton(false, true, false, false);
         uiRef.appendMsg(String.format("Calling %s:%d...\n",recvAddress,recvPort));
         callHandler.call(recvNameAddress);
         //System.out.printf("%s\n",callHandler.isOutgoing());
@@ -382,11 +387,13 @@ public class SipUA extends CallListenerAdapter{
             callHandler.hangup();
             uiRef.appendMsg(String.format("Call ended\n"));
             this.closeVoiceChat();
+            
         }else if(callHandler.isOutgoing()){
             RingPlayer.ins().stopPlay();
             uiRef.appendMsg(String.format("Call canceled\n"));
             callHandler.hangup();
             callHandler.listen();
+            uiRef.enableButton(true, false, false, false);
         }
         //System.out.printf(" after hang up: %s %s %s\n",callHandler.isActive(),callHandler.isClosed(),callHandler.isIdle());
         
