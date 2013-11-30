@@ -217,13 +217,15 @@ public class SipUA extends CallListenerAdapter{
     @Override
     public void onCallCancel(Call call, Message cancel){
         uiRef.appendLog("<<< (SIP) "+cancel.toString()+"\n");
-        uiRef.appendMsg(String.format("Call canceled by"+cancel.getRemoteAddress()+"...\n"));
-        callHandler.ackWithAnswer("");
-        //callHandler.hangup();
-        callHandler.listen();
-        
-        if(eventListener != null){
-            eventListener.onCallCancel();
+        if(callHandler.isIncoming()){
+            uiRef.appendMsg(String.format("Call canceled by"+cancel.getRemoteAddress()+"...\n"));
+            callHandler.ackWithAnswer("");
+            //callHandler.hangup();
+            callHandler.listen();
+
+            if(eventListener != null){
+                eventListener.onCallCancel();
+            }
         }
     }
     
@@ -232,10 +234,12 @@ public class SipUA extends CallListenerAdapter{
         uiRef.appendLog("<<< (SIP) "+bye.toString()+"\n");
         uiRef.appendMsg(String.format("Call ended by "+bye.getRemoteAddress()+"\n"));
         //callHandler.accept("");
-        this.closeVoiceChat();
-        
-        if(eventListener != null){
-            eventListener.onCallBye();
+        if(callHandler.isActive()){
+            this.closeVoiceChat();
+
+            if(eventListener != null){
+                eventListener.onCallBye();
+            }
         }
     }
     
