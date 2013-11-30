@@ -184,7 +184,7 @@ public class SipUA extends CallListenerAdapter{
         if(callHandler.isIncoming()){
             RingPlayer.ins().stopPlay();
             uiRef.enableButton(true, false, false, false);
-            uiRef.appendMsg(String.format("refuse the call from "+inviteRef.getRemoteAddress()+"\n"));
+            uiRef.appendMsg(String.format("Refuse the call from "+inviteRef.getRemoteAddress()+"\n"));
             callHandler.refuse();
             callHandler.listen();
         }
