@@ -88,7 +88,7 @@ public class SipUA extends CallListenerAdapter{
     public void onCallAccepted(Call call, java.lang.String sdp, Message resp){
         //super.onCallAccepted(call, sdp, resp);
         //System.err.println("Accepted: "+resp);
-        uiRef.appendLog("<<< (SIP) "+resp.toString()+"\n");
+        uiRef.appendLog("[RECV]<<< (SIP) "+resp.toString()+"\n");
         uiRef.appendMsg(String.format("Call accepted by "+resp.getRemoteAddress()+"\n"));
         
         //stop ring
@@ -117,7 +117,7 @@ public class SipUA extends CallListenerAdapter{
     @Override
     public void onCallRefused(Call call, java.lang.String reason, Message resp){
         
-        uiRef.appendLog("<<< (SIP) "+resp.toString()+"\n");
+        uiRef.appendLog("[RECV]<<< (SIP) "+resp.toString()+"\n");
         uiRef.appendMsg(String.format("Call refused by "+resp.getRemoteAddress()+"\n"));
         RingPlayer.ins().stopPlay();
         callHandler.ackWithAnswer("");
@@ -132,7 +132,7 @@ public class SipUA extends CallListenerAdapter{
     public void onCallInvite(Call call,NameAddress callee, NameAddress caller, java.lang.String sdp, Message invite){
         //super.onCallInvite(call, callee, caller, sdp, invite);
         //System.err.println("Invite: "+invite);
-        uiRef.appendLog("<<< (SIP) "+invite.toString()+"\n");
+        uiRef.appendLog("[RECV]<<< (SIP) "+invite.toString()+"\n");
         uiRef.appendMsg("You got a call from "+invite.getRemoteAddress()+"\n");
         sdpRef=sdp;
         inviteRef=invite;
@@ -195,7 +195,7 @@ public class SipUA extends CallListenerAdapter{
         //super.onCallRinging(call, resp);
         //System.err.println("onCallRinging: "+resp);
         if(callHandler.isOutgoing()){
-            uiRef.appendLog("<<< (SIP) "+resp.toString()+"\n");
+            uiRef.appendLog("[RECV]<<< (SIP) "+resp.toString()+"\n");
 
         }
         if(eventListener != null){
@@ -210,7 +210,7 @@ public class SipUA extends CallListenerAdapter{
     public void onCallConfirmed(Call call, java.lang.String sdp, Message ack){
         //super.onCallConfirmed(call, sdp, ack);
         //System.err.println("onCallConfirmed: "+ack);
-        uiRef.appendLog("<<< (SIP) "+ack.toString()+"\n");
+        uiRef.appendLog("[RECV]<<< (SIP) "+ack.toString()+"\n");
         if(callHandler.isActive()){
             
             //Callee starts its voice chat here
@@ -226,7 +226,7 @@ public class SipUA extends CallListenerAdapter{
     
     @Override
     public void onCallCancel(Call call, Message cancel){
-        uiRef.appendLog("<<< (SIP) "+cancel.toString()+"\n");
+        uiRef.appendLog("[RECV]<<< (SIP) "+cancel.toString()+"\n");
         RingPlayer.ins().stopPlay();
         if(callHandler.isClosed()){
             uiRef.appendMsg(String.format("Call canceled by"+cancel.getRemoteAddress()+"...\n"));
@@ -242,7 +242,7 @@ public class SipUA extends CallListenerAdapter{
     
     @Override
     public void onCallBye(Call call,Message bye){
-        uiRef.appendLog("<<< (SIP) "+bye.toString()+"\n");
+        uiRef.appendLog("[RECV]<<< (SIP) "+bye.toString()+"\n");
         uiRef.appendMsg(String.format("Call ended by "+bye.getRemoteAddress()+"\n"));
         //callHandler.accept("");
         if(callHandler.isClosed()){
@@ -320,12 +320,12 @@ public class SipUA extends CallListenerAdapter{
         sipProvider = new SipProvider(myIpAddress,myPort){
             @Override
             public synchronized void onSendMessage(Message msg){
-                uiRef.appendLog(">>> (SIP) "+msg.toString()+"\n");
+                uiRef.appendLog("[SEND]>>> (SIP) "+msg.toString()+"\n");
             }
             
             //@Override
             //public synchronized void onReceivedMessage(Transport transport,Message msg){
-            //    uiRef.appendLog("<<< "+msg.toString()+"\n");
+            //    uiRef.appendLog("[RECV]<<< "+msg.toString()+"\n");
             //}
             
             

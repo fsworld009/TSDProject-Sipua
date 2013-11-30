@@ -36,7 +36,7 @@ public class WebMiddleMan implements TcpSocketEventListener, SipUAEventListener 
 
     @Override
     public void onReceive(String msg) {
-        uiRef.appendLog("<<< (Web) "+msg+"\n");
+        uiRef.appendLog("[RECV]<<< (Web) "+msg+"\n");
         if(msg.contains("CALL")){
             String[] addr = msg.split("\\s+");
             uiRef.call(addr[1],Integer.parseInt(addr[2]));
@@ -98,7 +98,7 @@ public class WebMiddleMan implements TcpSocketEventListener, SipUAEventListener 
     }
     
     public void sendRaw(String msg){
-        uiRef.appendLog(">>> (Web) "+msg+"\n");
+        uiRef.appendLog("[SEND]>>> (Web) "+msg+"\n");
         socket.send(msg);
     }
 }
