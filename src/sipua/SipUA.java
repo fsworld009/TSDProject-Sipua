@@ -92,7 +92,7 @@ public class SipUA extends CallListenerAdapter{
         uiRef.appendMsg(String.format("Call accepted by "+resp.getRemoteAddress()+"\n"));
         
         //stop ring
-        
+        RingPlayer.ins().stopPlay();
 
 
         //Caller starts its voice chat here
@@ -116,8 +116,10 @@ public class SipUA extends CallListenerAdapter{
     
     @Override
     public void onCallRefused(Call call, java.lang.String reason, Message resp){
+        
         uiRef.appendLog("<<< (SIP) "+resp.toString()+"\n");
         uiRef.appendMsg(String.format("Call refused by "+resp.getRemoteAddress()+"\n"));
+        RingPlayer.ins().stopPlay();
         callHandler.ackWithAnswer("");
         callHandler.listen();
         if(eventListener != null){
@@ -140,9 +142,10 @@ public class SipUA extends CallListenerAdapter{
             if(callHandler.isIncoming()){
             call.ring();
             //start ring
+            RingPlayer.ins().startPlay();
             
             uiRef.called(call,callee,caller,sdp,invite);
-            //stopring
+            
             
             }
         }
@@ -151,6 +154,7 @@ public class SipUA extends CallListenerAdapter{
     public void acceptCall(Call call,NameAddress callee, NameAddress caller, java.lang.String sdp, Message invite){
         //callStatus();
         if(callHandler.isIncoming()){
+            RingPlayer.ins().stopPlay();
             uiRef.appendMsg(String.format("Accept the call from "+invite.getRemoteAddress()+"\n"));
             callHandler.accept(sdp);
         }
@@ -159,6 +163,7 @@ public class SipUA extends CallListenerAdapter{
     public void refuseCall(Call call,NameAddress callee, NameAddress caller, java.lang.String sdp, Message invite){
         //callStatus();
         if(callHandler.isIncoming()){
+            RingPlayer.ins().stopPlay();
             uiRef.appendMsg(String.format("refuse the call from "+invite.getRemoteAddress()+"\n"));
             callHandler.refuse();
             callHandler.listen();
@@ -170,6 +175,7 @@ public class SipUA extends CallListenerAdapter{
     private Message inviteRef;
     public void acceptCall(){
         if(callHandler.isIncoming()){
+            RingPlayer.ins().stopPlay();
             uiRef.appendMsg(String.format("Accept the call from "+inviteRef.getRemoteAddress()+"\n"));
             callHandler.accept(sdpRef);
         }
@@ -177,6 +183,7 @@ public class SipUA extends CallListenerAdapter{
     
     public void refuseCall(){
         if(callHandler.isIncoming()){
+            RingPlayer.ins().stopPlay();
             uiRef.appendMsg(String.format("refuse the call from "+inviteRef.getRemoteAddress()+"\n"));
             callHandler.refuse();
             callHandler.listen();
@@ -190,6 +197,7 @@ public class SipUA extends CallListenerAdapter{
         if(callHandler.isOutgoing()){
             uiRef.appendLog("<<< (SIP) "+resp.toString()+"\n");
             //start ring
+            RingPlayer.ins().startPlay();
         }
         if(eventListener != null){
             eventListener.onCallRinging();
@@ -217,7 +225,8 @@ public class SipUA extends CallListenerAdapter{
     @Override
     public void onCallCancel(Call call, Message cancel){
         uiRef.appendLog("<<< (SIP) "+cancel.toString()+"\n");
-        if(callHandler.isIncoming()){
+        RingPlayer.ins().stopPlay();
+        if(callHandler.isClosed()){
             uiRef.appendMsg(String.format("Call canceled by"+cancel.getRemoteAddress()+"...\n"));
             callHandler.ackWithAnswer("");
             //callHandler.hangup();
@@ -234,7 +243,7 @@ public class SipUA extends CallListenerAdapter{
         uiRef.appendLog("<<< (SIP) "+bye.toString()+"\n");
         uiRef.appendMsg(String.format("Call ended by "+bye.getRemoteAddress()+"\n"));
         //callHandler.accept("");
-        if(callHandler.isActive()){
+        if(callHandler.isClosed()){
             this.closeVoiceChat();
 
             if(eventListener != null){
@@ -376,6 +385,7 @@ public class SipUA extends CallListenerAdapter{
             uiRef.appendMsg(String.format("Call ended\n"));
             this.closeVoiceChat();
         }else if(callHandler.isOutgoing()){
+            RingPlayer.ins().stopPlay();
             uiRef.appendMsg(String.format("Call canceled\n"));
             callHandler.hangup();
             callHandler.listen();

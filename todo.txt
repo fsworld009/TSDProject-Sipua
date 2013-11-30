@@ -1,7 +1,9 @@
 global config
-sipUA display both web&sip msgs
+sip exchange configs
+*sipUA display both web&sip msgs
 volume control
-ring tone
+noise gate
+*ring tone
 *protocol btw browser and webserver (before call)
 *Simple echo sound server
 *connect btw Webserver and SipUA
