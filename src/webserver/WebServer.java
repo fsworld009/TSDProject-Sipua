@@ -30,7 +30,7 @@ import sipua.MainWindow;
 
       //ServerSocket serverSocket;  
         private HttpServer httpServer;
-        private int httpPort = 9527;
+        private static int httpPort = 9527;
         //private VoiceWarper voiceWarper;
         private MainWindow uiRef;
         private String password="1234";
@@ -63,6 +63,7 @@ import sipua.MainWindow;
             httpServer.createContext("/WebUI.class", new WebSip());
             httpServer.createContext("/Webphone.jar", new WebSipJar());
             httpServer.createContext("/ipinfo", new IpInfo());
+            httpServer.createContext("/ring.au", new RingWav());
             //httpServer.createContext("/WebSip$1.class", new WebSip1());
             //httpServer.createContext("/WebSip$MicThread.class", new WebSipMicThread());
 
@@ -97,6 +98,7 @@ import sipua.MainWindow;
             
             if(filepath.equals("Webphone.html")){
                 param="<param name=\"remoteIp\" value=\""+InetAddress.getLocalHost().getHostAddress()+"\"/>";
+                param+="<param name=\"httpPort\" value=\""+String.format("%d",httpPort)+"\"/>";
             }
             
             t.sendResponseHeaders(200, webpage.length()+param.length());
@@ -202,7 +204,7 @@ import sipua.MainWindow;
                 }
                 if(password.equals(WebServer.this.password)){
                     System.out.println("login succeed");
-                    uiRef.setRemoteIp(t.getRemoteAddress().getHostName());
+                    uiRef.setRemoteIp(t.getRemoteAddress().getAddress().getHostAddress());
                     WebServer.WriteHTML("Webphone.html", t);  //temp
                     //
                     System.out.println("login succeed");
@@ -231,6 +233,13 @@ import sipua.MainWindow;
             public void handle(HttpExchange t) throws IOException {
               //String response = "Test HttpServer";
                 WebServer.WriteRaw("WebUI.class", t);
+            }
+        }
+        
+        private static class RingWav implements HttpHandler {
+            public void handle(HttpExchange t) throws IOException {
+              //String response = "Test HttpServer";
+                WebServer.WriteRaw("ring.au", t);
             }
         }
         

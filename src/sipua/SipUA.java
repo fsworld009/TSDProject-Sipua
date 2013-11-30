@@ -134,20 +134,16 @@ public class SipUA extends CallListenerAdapter{
         uiRef.appendLog("<<< (SIP) "+invite.toString()+"\n");
         sdpRef=sdp;
         inviteRef=invite;
-       
-        
-        if(eventListener != null){
-            eventListener.onCallInvite(invite.getRemoteAddress());
-        }else{
-            if(callHandler.isIncoming()){
+        if(callHandler.isIncoming()){
             call.ring();
-            //start ring
-            RingPlayer.ins().startPlay();
-            
-            uiRef.called(call,callee,caller,sdp,invite);
-            
-            
+            if(eventListener != null){
+                eventListener.onCallInvite(invite.getRemoteAddress());
+            }else{
+                uiRef.called(call,callee,caller,sdp,invite);
+                //start ring
+                RingPlayer.ins().startPlay();
             }
+
         }
     }
     
@@ -196,11 +192,13 @@ public class SipUA extends CallListenerAdapter{
         //System.err.println("onCallRinging: "+resp);
         if(callHandler.isOutgoing()){
             uiRef.appendLog("<<< (SIP) "+resp.toString()+"\n");
-            //start ring
-            RingPlayer.ins().startPlay();
+
         }
         if(eventListener != null){
             eventListener.onCallRinging();
+        }else{
+            //start ring
+            RingPlayer.ins().startPlay();
         }
     }
     

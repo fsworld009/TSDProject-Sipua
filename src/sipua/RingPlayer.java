@@ -18,7 +18,7 @@ import sun.audio.ContinuousAudioDataStream;
  */
 public class RingPlayer {
     private static RingPlayer ins=null;
-    private String filename = "ring.wav";
+    private String filename = "ring.au";
     private ContinuousAudioDataStream audioStream;
     public static RingPlayer ins(){
         if(ins==null){

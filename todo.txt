@@ -3,6 +3,7 @@ sip exchange configs
 *sipUA display both web&sip msgs
 volume control
 noise gate
+force disconnect
 *ring tone
 *protocol btw browser and webserver (before call)
 *Simple echo sound server
