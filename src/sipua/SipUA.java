@@ -245,6 +245,7 @@ public class SipUA extends CallListenerAdapter{
         uiRef.appendLog("[RECV]<<< (SIP) "+bye.toString()+"\n");
         uiRef.appendMsg(String.format("Call ended by "+bye.getRemoteAddress()+"\n"));
         //callHandler.accept("");
+        callHandler.ackWithAnswer("");
         if(callHandler.isClosed()){
             this.closeVoiceChat();
 
