@@ -2,14 +2,14 @@
 package sipua;
 
 
-public class WebMiddleMan implements TcpSocketEventListener, SipUAEventListener {
+public class WebMiddleware implements TcpSocketEventListener, SipUAEventListener {
     private TcpSocket socket;
     private int tcpPort=10002;
     //private String remoteIp;
     MainWindow uiRef;
     SipUA sipRef;
     
-    public WebMiddleMan(MainWindow ref,SipUA ua){
+    public WebMiddleware(MainWindow ref,SipUA ua){
         uiRef= ref;
         sipRef = ua;
     }

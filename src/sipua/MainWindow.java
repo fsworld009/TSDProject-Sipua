@@ -5,6 +5,7 @@ package sipua;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -23,6 +24,8 @@ import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
 import org.zoolu.sip.address.NameAddress;
 import org.zoolu.sip.call.Call;
 import org.zoolu.sip.message.Message;
@@ -41,7 +44,7 @@ public class MainWindow extends JFrame {
     private SipUA sipUA;
     private int state;  //0=caller, 1=callee
     private WebServer webServer;
-    private WebMiddleMan webMiddleMan;
+    private WebMiddleware webMiddleMan;
     private String remoteIp;
     private int remoteRtpPort = 10003;
     private boolean remoteControl=false;
@@ -136,6 +139,12 @@ public class MainWindow extends JFrame {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         this.add(logScrollPane,gbc);
         
+        
+        Font font = new Font("Arial",Font.PLAIN,20);
+        logPane.setFont(font);
+        msgPane.setFont(font);
+        
+        
     }
     
     public void appendLog(final String newLog){     
@@ -208,7 +217,7 @@ public class MainWindow extends JFrame {
         System.out.println(ip);
         
         if(webMiddleMan == null){
-            webMiddleMan = new WebMiddleMan(this,sipUA);
+            webMiddleMan = new WebMiddleware(this,sipUA);
         }else{
             webMiddleMan.closeServer();
          }
